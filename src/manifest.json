@@ -1,0 +1,18 @@
+{
+  "compatibleVersion": 3,
+  "bundleVersion": 1,
+  "icon": "icon.png",
+  "commands": [
+    {
+      "name": "triangle-field",
+      "identifier": "triangle-field-identifier",
+      "script": "./entry-points/index.js"
+    }
+  ],
+  "menu": {
+    "title": "triangle-fields",
+    "items": [
+      "triangle-field-identifier"
+    ]
+  }
+}

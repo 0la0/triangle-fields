@@ -1,0 +1,29 @@
+{
+  "name": "triangle-field",
+  "version": "0.1.0",
+  "engines": {
+    "sketch": ">=3.0"
+  },
+  "skpm": {
+    "name": "triangle-field",
+    "manifest": "src/manifest.json",
+    "main": "triangle-field.sketchplugin",
+    "assets": [
+      "assets/**/*"
+    ]
+  },
+  "scripts": {
+    "build": "skpm-build",
+    "watch": "skpm-build --watch",
+    "start": "skpm-build --watch --run",
+    "postinstall": "npm run build && skpm-link",
+    "clean": "rm -rf triangle-field.sketchplugin"
+  },
+  "devDependencies": {
+    "@skpm/builder": "^0.5.2"
+  },
+  "author": "Luke Anderson",
+  "dependencies": {
+    "delaunay-triangulate": "^1.1.6"
+  }
+}
