@@ -2121,7 +2121,7 @@ __webpack_require__.r(__webpack_exports__);
     return;
   }
 
-  Object(_main_triangle_field__WEBPACK_IMPORTED_MODULE_1__["default"])(context, sketchObject, 20, 20);
+  Object(_main_triangle_field__WEBPACK_IMPORTED_MODULE_1__["default"])(context, sketchObject, 20, 30);
 });
 
 /***/ }),
@@ -2163,7 +2163,13 @@ function createLine(p1, p2) {
   border.thickness = 2;
   shape.name = 'name test';
   return shape;
-}
+} // function getLength(p1, p2) {
+//   return Math.sqrt(
+//     Math.pow(p1.x - p2.x, 2) +
+//     Math.pow(p2.x - p2.y)
+//   );
+// }
+
 
 var Line =
 /*#__PURE__*/
@@ -2181,6 +2187,16 @@ function () {
   }
 
   _createClass(Line, [{
+    key: "getStartPoint",
+    value: function getStartPoint() {
+      return this.p1;
+    }
+  }, {
+    key: "getEndPoint",
+    value: function getEndPoint() {
+      return this.p2;
+    }
+  }, {
     key: "getShape",
     value: function getShape() {
       return createLine(this.p1, this.p2);
@@ -2189,6 +2205,56 @@ function () {
     key: "getId",
     value: function getId() {
       return this.id;
+    } // getLength() {
+    //   return Math.sqrt(
+    //     Math.pow(this.p1.x - this.p2.x, 2) +
+    //     Math.pow(this.p2.x - this.p2.y, 2)
+    //   );
+    // }
+
+  }, {
+    key: "multScalar",
+    value: function multScalar(scalar) {
+      this.p1.multScalar(scalar);
+      this.p2.multScalar(scalar);
+      return this;
+    } // getNormalizedClone() {
+    //   const length = this.getLength();
+    //   // return this.clone().multScalar(1 / length);
+    //   const p2 = this.getEndPoint().sub(this.p1).multScalar(1 / length).add(this.p1);
+    //   return new Line(this.p1.clone(), p2);
+    // }
+    // getReversedNormalizedClone() {
+    //   const length = this.getLength();
+    //   const p1 = this.getStartPoint().sub(this.p2).multScalar(1 / length).add(this.p2);
+    //   return new Line(p1, this.p2.clone());
+    // }
+
+  }, {
+    key: "getPointOnLineFromStart",
+    value: function getPointOnLineFromStart(distance) {
+      var p1 = this.p1.clone();
+      var p2 = this.p2.clone().sub(p1);
+      var length = Math.sqrt(p2.getMagnitudeSquared());
+      return p2.multScalar(1 / length).multScalar(distance).add(p1);
+    }
+  }, {
+    key: "getPointOnLineFromEnd",
+    value: function getPointOnLineFromEnd(distance) {
+      var p2 = this.p2.clone();
+      var p1 = this.p1.clone().sub(p2);
+      var length = Math.sqrt(p1.getMagnitudeSquared());
+      return p1.multScalar(1 / length).multScalar(distance).add(p2);
+    }
+  }, {
+    key: "reverseClone",
+    value: function reverseClone() {
+      return new Line(this.p2.clone(), this.p1.clone());
+    }
+  }, {
+    key: "clone",
+    value: function clone() {
+      return new Line(this.p1.clone(), this.p2.clone());
     }
   }]);
 
@@ -2234,7 +2300,7 @@ function () {
   function Oval(center, radius, name) {
     _classCallCheck(this, Oval);
 
-    this.center = center.clone().sub(radius / 2);
+    this.center = center.clone().addScalar(-radius / 2);
     this.radius = radius;
     this.name = name;
   }
@@ -2288,14 +2354,6 @@ function () {
     key: "getY",
     value: function getY() {
       return this.y;
-    } // TODO: change to addScalar
-
-  }, {
-    key: "sub",
-    value: function sub(scalar) {
-      this.x -= scalar;
-      this.y -= scalar;
-      return this;
     }
   }, {
     key: "add",
@@ -2303,9 +2361,24 @@ function () {
       return new Point(this.x + p.x, this.y + p.y);
     }
   }, {
+    key: "sub",
+    value: function sub(p) {
+      return new Point(this.x - p.x, this.y - p.y);
+    }
+  }, {
     key: "multScalar",
     value: function multScalar(scalar) {
       return new Point(this.x * scalar, this.y * scalar);
+    }
+  }, {
+    key: "addScalar",
+    value: function addScalar(scalar) {
+      return new Point(this.x + scalar, this.y + scalar);
+    }
+  }, {
+    key: "getMagnitudeSquared",
+    value: function getMagnitudeSquared() {
+      return this.x * this.x + this.y * this.y;
     } // TODO: change to getArrayFromElements
 
   }, {
@@ -2479,6 +2552,80 @@ function createField(numPoints, edgePoints) {
   };
 }
 
+function createGaussianField(numPoints, edgePoints) {
+  var centroid = Object(_util_Math__WEBPACK_IMPORTED_MODULE_3__["getCentroid"])(edgePoints);
+  var bounds = getBounds(edgePoints);
+  var maxRadius = Math.max(bounds.maxX - centroid.x, centroid.x - bounds.minX, bounds.maxY - centroid.x, centroid.y - bounds.minY);
+  var points = [];
+
+  while (points.length < numPoints) {
+    var angle = 2 * Math.PI * Math.random(); // const radius = maxRadius * Math.random();
+    // const radius = maxRadius * Math.pow(Math.random(), 1.5);
+
+    var radius = maxRadius * (1 - Math.pow(Math.random(), 1.5));
+    var potentialPoint = new _geometry_Point__WEBPACK_IMPORTED_MODULE_5__["default"](radius * Math.cos(angle) + centroid.x, radius * Math.sin(angle) + centroid.y);
+
+    if (Object(_util_Intersection__WEBPACK_IMPORTED_MODULE_4__["pointIsInsidePolygon"])(edgePoints, potentialPoint)) {
+      points.push(potentialPoint);
+    }
+  }
+
+  return {
+    points: points
+  };
+}
+
+function createSquareField(numPoints, edgePoints) {
+  var bounds = getBounds(edgePoints);
+  var numRows = 10;
+  var numColumns = 10;
+  var xStride = bounds.rangeX / numColumns;
+  var yStride = bounds.rangeY / numRows;
+  var points = [];
+
+  for (var i = 0; i < numColumns; i++) {
+    for (var j = 0; j < numRows; j++) {
+      var potentialPoint = new _geometry_Point__WEBPACK_IMPORTED_MODULE_5__["default"](i * xStride + bounds.minX, j * yStride + bounds.minY);
+
+      if (Object(_util_Intersection__WEBPACK_IMPORTED_MODULE_4__["pointIsInsidePolygon"])(edgePoints, potentialPoint)) {
+        points.push(potentialPoint);
+      }
+    }
+  }
+
+  return {
+    points: points
+  };
+}
+
+function createRadialField(numPoints, edgePoints) {
+  var centroid = Object(_util_Math__WEBPACK_IMPORTED_MODULE_3__["getCentroid"])(edgePoints);
+  var bounds = getBounds(edgePoints);
+  var maxRadius = Math.max(bounds.maxX - centroid.x, centroid.x - bounds.minX, bounds.maxY - centroid.x, centroid.y - bounds.minY);
+  var TWO_PI = 2 * Math.PI;
+  var numSectors = 8;
+  var numSegments = 5;
+  var thetaStride = TWO_PI / numSectors;
+  var radiusStride = maxRadius / numSegments;
+  var points = [centroid.clone()];
+
+  for (var t = 0; t < numSectors; t++) {
+    for (var r = 1; r < numSegments; r++) {
+      var theta = t * thetaStride;
+      var radius = r * radiusStride;
+      var potentialPoint = new _geometry_Point__WEBPACK_IMPORTED_MODULE_5__["default"](radius * Math.cos(theta) + centroid.x, radius * Math.sin(theta) + centroid.y);
+
+      if (Object(_util_Intersection__WEBPACK_IMPORTED_MODULE_4__["pointIsInsidePolygon"])(edgePoints, potentialPoint)) {
+        points.push(potentialPoint);
+      }
+    }
+  }
+
+  return {
+    points: points
+  };
+}
+
 function getPointsFromShape(shape, numPoints) {
   var path = shape.pathInFrameWithTransforms();
   var bezierPath = NSBezierPath.bezierPathWithPath(path);
@@ -2502,10 +2649,24 @@ function getPointsFromShape(shape, numPoints) {
   return points;
 }
 
+function lineIsInConcaveSpace(line, polygon) {
+  var epsilon = 5; // if (!pointIsInsidePolygon(polygon, line.getPointOnLineFromStart(epsilon))) {
+  //   return true;
+  // }
+  // if (!pointIsInsidePolygon(polygon, line.getPointOnLineFromEnd(epsilon))) {
+  //   return true;
+  // }
+
+  return false;
+}
+
 /* harmony default export */ __webpack_exports__["default"] = (function (context, shape, numEdgePoint, numPoints) {
   var page = context.document.currentPage();
-  var edgePoints = getPointsFromShape(shape, numEdgePoint);
-  var pointField = createField(numPoints, edgePoints);
+  var edgePoints = getPointsFromShape(shape, numEdgePoint); // const pointField = createField(numPoints, edgePoints);
+  // const pointField = createGaussianField(numPoints, edgePoints);
+  // const pointField = createSquareField(numPoints, edgePoints);
+
+  var pointField = createRadialField(numPoints, edgePoints);
   var allPoints = pointField.points.concat(edgePoints);
   var pointArray = allPoints.map(function (point) {
     return point.getId();
@@ -2522,9 +2683,8 @@ function getPointsFromShape(shape, numPoints) {
       p1: allPoints[i1],
       p2: allPoints[i2]
     };
-  }); // TODO: remove lines for lines in concave space - generate point on line and do intersection test\
-
-  var lineLayers = trianglePoints.map(function (_ref3) {
+  });
+  var uniqueLines = trianglePoints.map(function (_ref3) {
     var p0 = _ref3.p0,
         p1 = _ref3.p1,
         p2 = _ref3.p2;
@@ -2541,7 +2701,10 @@ function getPointsFromShape(shape, numPoints) {
       }
     });
     return uniqueList;
-  }, []).map(function (line) {
+  }, []).filter(function (line) {
+    return !lineIsInConcaveSpace(line, edgePoints);
+  });
+  var lineLayers = uniqueLines.map(function (line) {
     return line.getShape();
   });
   var triangleLayers = trianglePoints.map(function (_ref4) {
@@ -2553,7 +2716,7 @@ function getPointsFromShape(shape, numPoints) {
     return triangle.getShape();
   });
   var pointLayers = allPoints.map(function (p, index) {
-    return new _geometry_Oval__WEBPACK_IMPORTED_MODULE_7__["default"](p, 2, "Point".concat(index));
+    return new _geometry_Oval__WEBPACK_IMPORTED_MODULE_7__["default"](p, 7, "Point".concat(index));
   }).map(function (oval) {
     return oval.getShape();
   });
@@ -2602,7 +2765,7 @@ var ORIENTATION = {
   COUNTERCLOCKWISE: 'COUNTERCLOCKWISE'
 };
 
-function onSegment(p, q, r) {
+function isOnSegment(p, q, r) {
   return q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) && q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y);
 }
 
@@ -2626,19 +2789,19 @@ function linesDoIntersect(p1, q1, p2, q2) {
     return true;
   }
 
-  if (o1 === ORIENTATION.COLINEAR && onSegment(p1, p2, q1)) {
+  if (o1 === ORIENTATION.COLINEAR && isOnSegment(p1, p2, q1)) {
     return true;
   }
 
-  if (o2 === ORIENTATION.COLINEAR && onSegment(p1, q2, q1)) {
+  if (o2 === ORIENTATION.COLINEAR && isOnSegment(p1, q2, q1)) {
     return true;
   }
 
-  if (o3 === ORIENTATION.COLINEAR && onSegment(p2, p1, q2)) {
+  if (o3 === ORIENTATION.COLINEAR && isOnSegment(p2, p1, q2)) {
     return true;
   }
 
-  if (o4 === ORIENTATION.COLINEAR && onSegment(p2, q1, q2)) {
+  if (o4 === ORIENTATION.COLINEAR && isOnSegment(p2, q1, q2)) {
     return true;
   }
 
@@ -2660,7 +2823,7 @@ function pointIsInsidePolygon(polygon, p) {
     if (linesDoIntersect(polygon[i], polygon[nextIndex], p, extreme)) {
       // p is colinear with i-next and it lies on segment
       if (getOrientation(polygon[i], p, polygon[nextIndex]) === ORIENTATION.COLINEAR) {
-        return onSegment(polygon[i], p, polygon[nextIndex]);
+        return isOnSegment(polygon[i], p, polygon[nextIndex]);
       }
 
       count++;

@@ -12,7 +12,7 @@ function createOval(centerPoint, radius, name) {
 
 export default class Oval {
   constructor(center, radius, name) {
-    this.center = center.clone().sub(radius / 2);
+    this.center = center.clone().addScalar(-radius / 2);
     this.radius = radius;
     this.name = name;
   }

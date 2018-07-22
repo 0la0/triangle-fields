@@ -47,6 +47,84 @@ function createField(numPoints, edgePoints) {
   return { points };
 }
 
+function createGaussianField(numPoints, edgePoints) {
+  const centroid = getCentroid(edgePoints);
+  const bounds = getBounds(edgePoints);
+  const maxRadius = Math.max(
+    bounds.maxX - centroid.x,
+    centroid.x - bounds.minX,
+    bounds.maxY - centroid.x,
+    centroid.y - bounds.minY,
+  );
+  let points = [];
+  while (points.length < numPoints) {
+    const angle = 2 * Math.PI * Math.random();
+    // const radius = maxRadius * Math.random();
+    // const radius = maxRadius * Math.pow(Math.random(), 1.5);
+    const radius = maxRadius * (1 - Math.pow(Math.random(), 1.5));
+    const potentialPoint = new Point(
+      radius * Math.cos(angle) + centroid.x,
+      radius * Math.sin(angle) + centroid.y,
+    );
+    if (pointIsInsidePolygon(edgePoints, potentialPoint)) {
+      points.push(potentialPoint);
+    }
+  }
+  return { points };
+}
+
+function createSquareField(numPoints, edgePoints) {
+  const bounds = getBounds(edgePoints);
+  const numRows = 10;
+  const numColumns = 10;
+  const xStride = bounds.rangeX / numColumns;
+  const yStride = bounds.rangeY / numRows;
+  let points = [];
+  for (let i = 0; i < numColumns; i++) {
+    for (let j = 0; j < numRows; j++) {
+      const potentialPoint = new Point(
+        i * xStride + bounds.minX,
+        j * yStride + bounds.minY,
+      );
+      if (pointIsInsidePolygon(edgePoints, potentialPoint)) {
+        points.push(potentialPoint);
+      }
+    }
+  }
+  return { points };
+}
+
+function createRadialField(numPoints, edgePoints) {
+  const centroid = getCentroid(edgePoints);
+  const bounds = getBounds(edgePoints);
+  const maxRadius = Math.max(
+    bounds.maxX - centroid.x,
+    centroid.x - bounds.minX,
+    bounds.maxY - centroid.x,
+    centroid.y - bounds.minY,
+  );
+  const TWO_PI = 2 * Math.PI;
+  const numSectors = 8;
+  const numSegments = 5;
+  const thetaStride = TWO_PI / numSectors;
+  const radiusStride = maxRadius / numSegments;
+  let points = [ centroid.clone(), ];
+  for (let t = 0; t < numSectors; t++) {
+    for (let r = 1; r < numSegments; r++) {
+      const theta = t * thetaStride;
+      const radius = r * radiusStride;
+      const potentialPoint = new Point(
+        radius * Math.cos(theta) + centroid.x,
+        radius * Math.sin(theta) + centroid.y
+      );
+      if (pointIsInsidePolygon(edgePoints, potentialPoint)) {
+        points.push(potentialPoint);
+      }
+    }
+  }
+  return { points };
+}
+
 function getPointsFromShape(shape, numPoints) {
   const path = shape.pathInFrameWithTransforms();
   const bezierPath = NSBezierPath.bezierPathWithPath(path);
@@ -68,10 +146,24 @@ function getPointsFromShape(shape, numPoints) {
   return points;
 }
 
+function lineIsInConcaveSpace(line, polygon) {
+  const epsilon = 5;
+  // if (!pointIsInsidePolygon(polygon, line.getPointOnLineFromStart(epsilon))) {
+  //   return true;
+  // }
+  // if (!pointIsInsidePolygon(polygon, line.getPointOnLineFromEnd(epsilon))) {
+  //   return true;
+  // }
+  return false;
+}
+
 export default function(context, shape, numEdgePoint, numPoints) {
   const page = context.document.currentPage();
   const edgePoints = getPointsFromShape(shape, numEdgePoint);
-  const pointField = createField(numPoints, edgePoints);
+  // const pointField = createField(numPoints, edgePoints);
+  // const pointField = createGaussianField(numPoints, edgePoints);
+  // const pointField = createSquareField(numPoints, edgePoints);
+  const pointField = createRadialField(numPoints, edgePoints);
   const allPoints = pointField.points.concat(edgePoints);
 
   const pointArray = allPoints.map(point => point.getId());
@@ -83,9 +175,7 @@ export default function(context, shape, numEdgePoint, numPoints) {
     p2: allPoints[i2],
   }));
 
-  // TODO: remove lines for lines in concave space - generate point on line and do intersection test\
-
-  const lineLayers = trianglePoints
+  const uniqueLines = trianglePoints
     .map(({ p0, p1, p2 }) => {
       const line0 = new Line(p0, p1);
       const line1 = new Line(p1, p2);
@@ -100,14 +190,16 @@ export default function(context, shape, numEdgePoint, numPoints) {
       });
       return uniqueList;
     }, [])
-    .map(line => line.getShape());
+    .filter(line => !lineIsInConcaveSpace(line, edgePoints));
+
+  const lineLayers = uniqueLines.map(line => line.getShape());
 
   const triangleLayers = trianglePoints
     .map(({ p0, p1, p2}) => new Triangle(p0, p1, p2))
     .map(triangle => triangle.getShape());
 
   const pointLayers = allPoints
-    .map((p, index) => new Oval(p, 2, `Point${index}`))
+    .map((p, index) => new Oval(p, 7, `Point${index}`))
     .map(oval => oval.getShape());
 
   const parentGroup = new Group({

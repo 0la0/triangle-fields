@@ -19,6 +19,5 @@
   "name": "triangle-field",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",
-  "author": "Luke Anderson",
-  "authorEmail": "luke.kansas@gmail.com"
+  "author": "Luke Anderson"
 }

@@ -8,5 +8,5 @@ export default function(context) {
     // UI.alert('Error', 'Select a shape!');
     return;
   }
-  triangleField(context, sketchObject, 20, 20);
+  triangleField(context, sketchObject, 20, 30);
 }

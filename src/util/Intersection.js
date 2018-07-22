@@ -6,7 +6,7 @@ const ORIENTATION = {
   COUNTERCLOCKWISE: 'COUNTERCLOCKWISE'
 };
 
-function onSegment(p, q, r) {
+function isOnSegment(p, q, r) {
   return q.x <= Math.max(p.x, r.x) &&
          q.x >= Math.min(p.x, r.x) &&
          q.y <= Math.max(p.y, r.y) &&
@@ -29,10 +29,10 @@ function linesDoIntersect(p1, q1, p2, q2) {
   if (o1 !== o2 && o3 !== o4) {
     return true;
   }
-  if (o1 === ORIENTATION.COLINEAR && onSegment(p1, p2, q1)) { return true; }
-  if (o2 === ORIENTATION.COLINEAR && onSegment(p1, q2, q1)) { return true; }
-  if (o3 === ORIENTATION.COLINEAR && onSegment(p2, p1, q2)) { return true; }
-  if (o4 === ORIENTATION.COLINEAR && onSegment(p2, q1, q2)) { return true; }
+  if (o1 === ORIENTATION.COLINEAR && isOnSegment(p1, p2, q1)) { return true; }
+  if (o2 === ORIENTATION.COLINEAR && isOnSegment(p1, q2, q1)) { return true; }
+  if (o3 === ORIENTATION.COLINEAR && isOnSegment(p2, p1, q2)) { return true; }
+  if (o4 === ORIENTATION.COLINEAR && isOnSegment(p2, q1, q2)) { return true; }
   return false;
 }
 
@@ -49,7 +49,7 @@ export function pointIsInsidePolygon(polygon, p) {
     if (linesDoIntersect(polygon[i], polygon[nextIndex], p, extreme)) {
       // p is colinear with i-next and it lies on segment
       if (getOrientation(polygon[i], p, polygon[nextIndex]) === ORIENTATION.COLINEAR) {
-        return onSegment(polygon[i], p, polygon[nextIndex]);
+        return isOnSegment(polygon[i], p, polygon[nextIndex]);
       }
       count++;
     }

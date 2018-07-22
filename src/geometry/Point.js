@@ -13,17 +13,17 @@ export default class Point {
     return this.y;
   }
 
-  // TODO: change to addScalar
-  sub(scalar) {
-    this.x -= scalar;
-    this.y -= scalar;
-    return this;
-  }
-
   add(p) {
     return new Point(
       this.x + p.x,
       this.y + p.y
+    );
+  }
+
+  sub(p) {
+    return new Point(
+      this.x - p.x,
+      this.y - p.y
     );
   }
 
@@ -32,6 +32,17 @@ export default class Point {
       this.x * scalar,
       this.y * scalar
     );
+  }
+
+  addScalar(scalar) {
+    return new Point(
+      this.x + scalar,
+      this.y + scalar
+    );
+  }
+
+  getMagnitudeSquared() {
+    return this.x * this.x + this.y * this.y;
   }
 
   // TODO: change to getArrayFromElements
