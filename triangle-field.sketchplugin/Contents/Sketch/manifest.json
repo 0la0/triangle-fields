@@ -17,6 +17,7 @@
   },
   "version": "0.1.0",
   "name": "triangle-field",
+  "identifier": "triangle-field",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",
   "author": "Luke Anderson"

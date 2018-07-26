@@ -1,6 +1,7 @@
 import { Types } from 'sketch';
 import { Group } from 'sketch/dom';
-import delaunayTriangulate from 'delaunay-triangulate';
+import cdt2d from 'cdt2d';
+import cleanPSLG from 'clean-pslg';
 import { getRandomNum, getCentroid } from '../util/Math';
 import { pointIsInsidePolygon } from '../util/Intersection';
 import Point from '../geometry/Point';
@@ -146,28 +147,19 @@ function getPointsFromShape(shape, numPoints) {
   return points;
 }
 
-function lineIsInConcaveSpace(line, polygon) {
-  const epsilon = 5;
-  // if (!pointIsInsidePolygon(polygon, line.getPointOnLineFromStart(epsilon))) {
-  //   return true;
-  // }
-  // if (!pointIsInsidePolygon(polygon, line.getPointOnLineFromEnd(epsilon))) {
-  //   return true;
-  // }
-  return false;
-}
-
 export default function(context, shape, numEdgePoint, numPoints) {
   const page = context.document.currentPage();
   const edgePoints = getPointsFromShape(shape, numEdgePoint);
-  // const pointField = createField(numPoints, edgePoints);
+  const pointField = createField(numPoints, edgePoints);
   // const pointField = createGaussianField(numPoints, edgePoints);
   // const pointField = createSquareField(numPoints, edgePoints);
-  const pointField = createRadialField(numPoints, edgePoints);
-  const allPoints = pointField.points.concat(edgePoints);
+  // const pointField = createRadialField(numPoints, edgePoints);
+  const allPoints = edgePoints.concat(pointField.points);
+  const pointArray = allPoints.map(point => point.toArray());
 
-  const pointArray = allPoints.map(point => point.getId());
-  const triangleIndices = delaunayTriangulate(pointArray);
+  const edgeIndices = edgePoints.map((point, index, arr) => [ index, (index + 1) % arr.length ]);
+  cleanPSLG(pointArray, edgeIndices)
+  const triangleIndices = cdt2d(pointArray, edgeIndices, { exterior: false });
 
   const trianglePoints = triangleIndices.map(([i0, i1, i2]) => ({
     p0: allPoints[i0],
@@ -189,8 +181,7 @@ export default function(context, shape, numEdgePoint, numPoints) {
         }
       });
       return uniqueList;
-    }, [])
-    .filter(line => !lineIsInConcaveSpace(line, edgePoints));
+    }, []);
 
   const lineLayers = uniqueLines.map(line => line.getShape());
 

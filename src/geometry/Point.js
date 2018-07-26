@@ -45,12 +45,16 @@ export default class Point {
     return this.x * this.x + this.y * this.y;
   }
 
-  // TODO: change to getArrayFromElements
-  getId() {
+  toArray() {
     return [ this.x, this.y ];
   }
 
   clone() {
     return new Point(this.x, this.y);
+  }
+
+  equals(p) {
+    if (!(p instanceof Point)) { return false; }
+    return this.x === p.x && this.y === p.y;
   }
 }

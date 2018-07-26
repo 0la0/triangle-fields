@@ -17,7 +17,7 @@ export default class Line {
   constructor(p1, p2) {
     this.p1 = p1;
     this.p2 = p2;
-    this.id = [ ...this.p1.getId(), ...this.p2.getId() ]
+    this.id = [ ...this.p1.toArray(), ...this.p2.toArray() ]
       .sort((a, b) => a - b)
       .reduce((acc, num) => `${acc}${num}`, '');
   }
@@ -64,5 +64,16 @@ export default class Line {
 
   clone() {
     return new Line(this.p1.clone(), this.p2.clone());
+  }
+
+  equals(line) {
+    if (!(line instanceof Line)) { return false; }
+    return (this.p1.equals(line.p1) && this.p2.equals(line.p2))
+        || (this.p1.equals(line.p2) && this.p2.equals(line.p1));
+  }
+
+  equalsPoints(p1, p2) {
+    return (this.p1.equals(p1) && this.p2.equals(p2))
+        || (this.p1.equals(p2) && this.p2.equals(p1));
   }
 }
