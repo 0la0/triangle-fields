@@ -10,6 +10,9 @@
     "main": "triangle-field.sketchplugin",
     "assets": [
       "assets/**/*"
+    ],
+    "resources": [
+      "assets/ui/main.js"
     ]
   },
   "scripts": {

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triangle Field</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+
+    <div class="row">
+      <label for="numEdgePoints">
+        Number of Edge Points
+      </label>
+      <input
+        type="number"
+        id="numEdgePoints"
+        value="20"
+      />
+    </div>
+
+    <div class="row">
+      <label for="numFieldPoints">
+        Number of Field Points
+      </label>
+      <input
+        type="number"
+        id="numFieldPoints"
+        value="20"
+      />
+    </div>
+
+    <fieldset>
+      <legend>Rendering Options</legend>
+      <div class="render-option">
+        <input
+          type="checkbox"
+          id="triangles"
+          name="renderoption"
+          value="triangles"
+          checked
+        />
+        <label for="triangles">Triangles</label>
+      </div>
+      <div class="render-option">
+        <input
+          type="checkbox"
+          id="lines"
+          name="renderoption"
+          value="lines"
+          checked
+        />
+        <label for="lines">Lines</label>
+      </div>
+      <div class="render-option">
+        <input
+          type="checkbox"
+          id="points"
+          name="renderoption"
+          value="points"
+        />
+        <label for="points">Points</label>
+      </div>
+    </fieldset>
+
+    <button id="generate">Generate</button>
+    <div id="loader" class="loader">
+      <p>crunching numbers</p>
+    </div>
+  </body>
+</html>

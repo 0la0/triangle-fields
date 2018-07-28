@@ -14,5 +14,9 @@
     "items": [
       "triangle-field-identifier"
     ]
-  }
+  },
+  "resources": [
+    "assets/ui/index.html",
+    "assets/ui/main.js"
+  ]
 }
