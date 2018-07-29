@@ -1,6 +1,6 @@
 import { getRandomColor } from '../util/Math';
 
-function createLine(p1, p2) {
+function createLine(p1, p2, thickness, name) {
   const path = NSBezierPath.bezierPath();
   path.moveToPoint(NSMakePoint(p1.getX(), p1.getY()));
   path.lineToPoint(NSMakePoint(p2.getX(), p2.getY()));
@@ -8,15 +8,17 @@ function createLine(p1, p2) {
   const shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path));
   const border = shape.style().addStylePartOfType(1);
   border.color = MSColor.colorWithRGBADictionary(getRandomColor());
-  border.thickness = 2;
-  shape.name = 'name test'
+  border.thickness = thickness;
+  shape.name = name;
   return shape;
 }
 
 export default class Line {
-  constructor(p1, p2) {
+  constructor(p1, p2, thickness, name) {
     this.p1 = p1;
     this.p2 = p2;
+    this.thickness = thickness;
+    this.name = name;
     this.id = [ ...this.p1.toArray(), ...this.p2.toArray() ]
       .sort((a, b) => a - b)
       .reduce((acc, num) => `${acc}${num}`, '');
@@ -31,7 +33,7 @@ export default class Line {
   }
 
   getShape() {
-    return createLine(this.p1, this.p2);
+    return createLine(this.p1, this.p2, this.thickness, this.name);
   }
 
   getId() {

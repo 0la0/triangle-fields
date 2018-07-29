@@ -93,26 +93,52 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-var domIds = ['numEdgePoints', 'numFieldPoints', 'points', 'lines', 'triangles', 'generate', 'loader'];
+var domIds = ['numEdgePoints', 'numFieldPoints', 'points', 'lines', 'triangles', 'generate', 'loader', 'pointRadius', 'pointRadiusContainer', 'lineWidth', 'lineWidthContainer', 'distributionRandom', 'distributionParabolic', 'distributionGrid', 'distributionRadial'];
 var dom = {};
 var params = {
   numEdgePoints: 20,
   numFieldPoints: 20,
-  points: false,
-  lines: true,
-  triangles: true
+  renderPoints: false,
+  renderLines: false,
+  renderTriangles: true,
+  distribution: 'random',
+  lineWidth: 4,
+  pointRadius: 5
 };
 var LOADER_ACTIVE = 'loader-active';
+var SHAPE_PARAM_ACTIVE = 'shape-param-active';
+var TIME_DELAY = 50;
 
-function pluginCall(actionName) {
+function callPlugin(actionName) {
   if (!actionName) {
     throw new Error('missing action name');
   }
 
-  window['__skpm_sketchBridge'].callNative(JSON.stringify([].slice.call(arguments)));
+  try {
+    var payload = JSON.stringify([].slice.call(arguments));
+    console.log(payload);
+    window['__skpm_sketchBridge'].callNative(payload);
+  } catch (error) {
+    closeLoader();
+  }
 }
 
+function handleDistributionChange(event) {
+  if (!event.target.checked) {
+    return;
+  }
+
+  params.distribution = event.target.value;
+} // TODO: color pallet (min 2) discrete / continuous, field distribution
+
+
 function init() {
+  window.closeLoader = function () {
+    return setTimeout(function () {
+      return dom.loader.classList.remove(LOADER_ACTIVE);
+    }, TIME_DELAY);
+  };
+
   domIds.forEach(function (key) {
     return dom[key] = document.getElementById(key);
   });
@@ -123,34 +149,41 @@ function init() {
     return params.numFieldPoints = parseInt(event.target.value, 10);
   });
   dom.points.addEventListener('change', function (event) {
-    return params.points = event.target.checked;
+    var val = event.target.checked;
+    params.renderPoints = val;
+    val ? dom.pointRadiusContainer.classList.add(SHAPE_PARAM_ACTIVE) : dom.pointRadiusContainer.classList.remove(SHAPE_PARAM_ACTIVE);
+  });
+  dom.pointRadius.addEventListener('change', function (event) {
+    return params.pointRadius = parseInt(event.target.value, 10);
   });
   dom.lines.addEventListener('change', function (event) {
-    return params.lines = event.target.checked;
+    var val = event.target.checked;
+    params.renderLines = val;
+    val ? dom.lineWidthContainer.classList.add(SHAPE_PARAM_ACTIVE) : dom.lineWidthContainer.classList.remove(SHAPE_PARAM_ACTIVE);
+  });
+  dom.lineWidth.addEventListener('change', function (event) {
+    return params.lineWidth = parseInt(event.target.value, 10);
   });
   dom.triangles.addEventListener('change', function (event) {
-    return params.triangles = event.target.checked;
+    return params.renderTriangles = event.target.checked;
   });
+  dom.distributionRandom.addEventListener('change', handleDistributionChange);
+  dom.distributionParabolic.addEventListener('change', handleDistributionChange);
+  dom.distributionGrid.addEventListener('change', handleDistributionChange);
+  dom.distributionRadial.addEventListener('change', handleDistributionChange);
   dom.generate.addEventListener('click', function () {
-    if (!params.triangles && !params.lines && !params.points) {
+    if (!params.renderPoints && !params.renderLines && !params.renderTriangles) {
       return;
-    } // TODO: open loader
-
+    }
 
     dom.loader.classList.add(LOADER_ACTIVE);
-    pluginCall('GENERATE_FIELD', JSON.stringify(params));
-  }); // OPTIONS TODO: color pallet (min 2) discrete / continuous, field distribution
-} // all rendering is synchronous anyway ... :/
+    setTimeout(function () {
+      return callPlugin('GENERATE_FIELD', JSON.stringify(params));
+    }, TIME_DELAY);
+  });
+}
 
-
-window.closeLoader = function () {
-  dom.loader.classList.remove(LOADER_ACTIVE);
-}; // TODO: change to dom loaded
-
-
-setTimeout(function () {
-  return init();
-});
+document.addEventListener('DOMContentLoaded', init);
 
 /***/ })
 

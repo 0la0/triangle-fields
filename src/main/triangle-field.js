@@ -9,7 +9,12 @@ import Triangle from '../geometry/Triangle';
 import Oval from '../geometry/Oval';
 import Line from '../geometry/Line';
 
-const FIELD_SIZE = 100;
+const distributionStrategy = {
+  random: createRandomField,
+  parabolic: createGaussianField,
+  grid: createSquareField,
+  radial: createRadialField,
+};
 
 function getBounds(points) {
   const dimensions = {
@@ -32,11 +37,11 @@ function getBounds(points) {
   return fieldDimensions;
 }
 
-function createField(numPoints, edgePoints) {
+function createRandomField(numFieldPoints, edgePoints) {
   const centroid = getCentroid(edgePoints);
   const bounds = getBounds(edgePoints);
   let points = [];
-  while (points.length < numPoints) {
+  while (points.length < numFieldPoints) {
     const potentialPoint = new Point(
       getRandomNum(bounds.rangeX) + bounds.minX,
       getRandomNum(bounds.rangeY) + bounds.minY,
@@ -48,7 +53,7 @@ function createField(numPoints, edgePoints) {
   return { points };
 }
 
-function createGaussianField(numPoints, edgePoints) {
+function createGaussianField(numFieldPoints, edgePoints) {
   const centroid = getCentroid(edgePoints);
   const bounds = getBounds(edgePoints);
   const maxRadius = Math.max(
@@ -58,11 +63,9 @@ function createGaussianField(numPoints, edgePoints) {
     centroid.y - bounds.minY,
   );
   let points = [];
-  while (points.length < numPoints) {
+  while (points.length < numFieldPoints) {
     const angle = 2 * Math.PI * Math.random();
-    // const radius = maxRadius * Math.random();
-    // const radius = maxRadius * Math.pow(Math.random(), 1.5);
-    const radius = maxRadius * (1 - Math.pow(Math.random(), 1.5));
+    const radius = maxRadius * Math.pow(Math.random(), 1.5);
     const potentialPoint = new Point(
       radius * Math.cos(angle) + centroid.x,
       radius * Math.sin(angle) + centroid.y,
@@ -74,7 +77,7 @@ function createGaussianField(numPoints, edgePoints) {
   return { points };
 }
 
-function createSquareField(numPoints, edgePoints) {
+function createSquareField(numFieldPoints, edgePoints) {
   const bounds = getBounds(edgePoints);
   const numRows = 10;
   const numColumns = 10;
@@ -95,7 +98,7 @@ function createSquareField(numPoints, edgePoints) {
   return { points };
 }
 
-function createRadialField(numPoints, edgePoints) {
+function createRadialField(numFieldPoints, edgePoints) {
   const centroid = getCentroid(edgePoints);
   const bounds = getBounds(edgePoints);
   const maxRadius = Math.max(
@@ -126,13 +129,13 @@ function createRadialField(numPoints, edgePoints) {
   return { points };
 }
 
-function getPointsFromShape(shape, numPoints) {
+function getPointsFromShape(shape, numFieldPoints) {
   const path = shape.pathInFrameWithTransforms();
   const bezierPath = NSBezierPath.bezierPathWithPath(path);
 
   const length = Math.floor(bezierPath.length());
-  const stride = length / numPoints;
-  const indices = new Array(numPoints).fill(null).map((n, i) => Math.floor(i * stride));
+  const stride = length / numFieldPoints;
+  const indices = new Array(numFieldPoints).fill(null).map((n, i) => Math.floor(i * stride));
 
   // TODO: use control points:
   // console.log(length, bezierPath)
@@ -147,16 +150,24 @@ function getPointsFromShape(shape, numPoints) {
   return points;
 }
 
-export default function(context, shape, numEdgePoint, numPoints) {
+export default function(context, shape, params) {
+  const {
+    numEdgePoints,
+    numFieldPoints,
+    renderPoints,
+    renderLines,
+    renderTriangles,
+    distribution,
+    lineWidth,
+    pointRadius
+  } = params;
+
   const page = context.document.currentPage();
-  const edgePoints = getPointsFromShape(shape, numEdgePoint);
-  const pointField = createField(numPoints, edgePoints);
-  // const pointField = createGaussianField(numPoints, edgePoints);
-  // const pointField = createSquareField(numPoints, edgePoints);
-  // const pointField = createRadialField(numPoints, edgePoints);
+  const edgePoints = getPointsFromShape(shape, numEdgePoints);
+  const distributionFn = distributionStrategy[distribution] || createRandomField;
+  const pointField = distributionFn(numFieldPoints, edgePoints);
   const allPoints = edgePoints.concat(pointField.points);
   const pointArray = allPoints.map(point => point.toArray());
-
   const edgeIndices = edgePoints.map((point, index, arr) => [ index, (index + 1) % arr.length ]);
   cleanPSLG(pointArray, edgeIndices)
   const triangleIndices = cdt2d(pointArray, edgeIndices, { exterior: false });
@@ -167,57 +178,59 @@ export default function(context, shape, numEdgePoint, numPoints) {
     p2: allPoints[i2],
   }));
 
-  const uniqueLines = trianglePoints
-    .map(({ p0, p1, p2 }) => {
-      const line0 = new Line(p0, p1);
-      const line1 = new Line(p1, p2);
-      const line2 = new Line(p2, p0);
-      return [ line0, line1, line2 ];
-    })
-    .reduce((uniqueList, triangleLines) => {
-      triangleLines.forEach(line => {
-        if (!uniqueList.some(_line => _line.getId() === line.getId())) {
-          uniqueList.push(line);
-        }
-      });
-      return uniqueList;
-    }, []);
-
-  const lineLayers = uniqueLines.map(line => line.getShape());
-
-  const triangleLayers = trianglePoints
-    .map(({ p0, p1, p2}) => new Triangle(p0, p1, p2))
-    .map(triangle => triangle.getShape());
-
-  const pointLayers = allPoints
-    .map((p, index) => new Oval(p, 7, `Point${index}`))
-    .map(oval => oval.getShape());
-
   const parentGroup = new Group({
     parent: page,
     name: 'triangle field'
   });
 
-  const triangleGroup = new Group({
-    parent: parentGroup,
-    name: 'triangles',
-    layers: triangleLayers,
-  });
+  if (renderTriangles) {
+    const triangleLayers = trianglePoints
+      .map(({ p0, p1, p2}) => new Triangle(p0, p1, p2))
+      .map(triangle => triangle.getShape());
+    const triangleGroup = new Group({
+      parent: parentGroup,
+      name: 'triangles',
+      layers: triangleLayers,
+    });
+    triangleGroup.adjustToFit();
+  }
 
-  const lineGroup = new Group({
-    parent: parentGroup,
-    name: 'lines',
-    layers: lineLayers,
-  });
+  if (renderLines) {
+    const lineLayers = trianglePoints
+      .map(({ p0, p1, p2 }) => {
+        const line0 = new Line(p0, p1, lineWidth, 'some-name');
+        const line1 = new Line(p1, p2, lineWidth, 'some-name');
+        const line2 = new Line(p2, p0, lineWidth, 'some-name');
+        return [ line0, line1, line2 ];
+      })
+      .reduce((uniqueList, triangleLines) => {
+        triangleLines.forEach(line => {
+          if (!uniqueList.some(_line => _line.getId() === line.getId())) {
+            uniqueList.push(line);
+          }
+        });
+        return uniqueList;
+      }, [])
+      .map(line => line.getShape());
+    const lineGroup = new Group({
+      parent: parentGroup,
+      name: 'lines',
+      layers: lineLayers,
+    });
+    lineGroup.adjustToFit();
+  }
 
-  const pointGroup = new Group({
-    parent: parentGroup,
-    name: 'points',
-    layers: pointLayers,
-  });
+  if (renderPoints) {
+    const pointLayers = allPoints
+      .map((p, index) => new Oval(p, pointRadius, `Point${index}`))
+      .map(oval => oval.getShape());
+    const pointGroup = new Group({
+      parent: parentGroup,
+      name: 'points',
+      layers: pointLayers,
+    });
+    pointGroup.adjustToFit();
+  }
 
-  triangleGroup.adjustToFit();
-  lineGroup.adjustToFit();
-  pointGroup.adjustToFit();
   parentGroup.adjustToFit();
 }

@@ -12120,43 +12120,6 @@ module.exports = function buildAPI(browserWindow, panel, webview) {
 
 /***/ }),
 
-/***/ "./node_modules/sketch-module-web-view/remote.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/sketch-module-web-view/remote.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* globals NSThread */
-var BrowserWindow = __webpack_require__(/*! ./lib */ "./node_modules/sketch-module-web-view/lib/index.js")
-
-var threadDictionary = NSThread.mainThread().threadDictionary()
-
-module.exports.getWebview = function getWebview(identifier) {
-  var panel = threadDictionary[identifier]
-  if (!panel) {
-    return undefined
-  }
-  return BrowserWindow.fromPanel(panel, identifier)
-}
-
-module.exports.isWebviewPresent = function isWebviewPresent(identifier) {
-  return !!threadDictionary[identifier]
-}
-
-module.exports.sendToWebview = function sendToWebview(identifier, evalString) {
-  var browserView = module.exports.getWebview(identifier)
-
-  if (!browserView) {
-    throw new Error('Webview ' + identifier + ' not found')
-  }
-
-  return browserView.webContents.executeJavaScript(evalString)
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/two-product/two-product.js":
 /*!*************************************************!*\
   !*** ./node_modules/two-product/two-product.js ***!
@@ -12606,26 +12569,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sketch_module_web_view__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! sketch-module-web-view */ "./node_modules/sketch-module-web-view/lib/index.js");
 /* harmony import */ var sketch_module_web_view__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(sketch_module_web_view__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _main_triangle_field__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../main/triangle-field */ "./src/main/triangle-field.js");
-/* harmony import */ var sketch_module_web_view_remote__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! sketch-module-web-view/remote */ "./node_modules/sketch-module-web-view/remote.js");
-/* harmony import */ var sketch_module_web_view_remote__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(sketch_module_web_view_remote__WEBPACK_IMPORTED_MODULE_3__);
 
 
-
- // export default function(context) {
-//   const sketchObject = context.selection.firstObject();
-//   if (!sketchObject) {
-//     context.document.showMessage('Select a shape!');
-//     // UI.alert('Error', 'Select a shape!');
-//     return;
-//   }
-//   triangleField(context, sketchObject, 20, 30);
-// }
+ // import { isWebviewPresent, sendToWebview } from 'sketch-module-web-view/remote';
 
 /* harmony default export */ __webpack_exports__["default"] = (function (context) {
   var options = {
     identifier: 'unique.id'
   };
   var browserWindow = new sketch_module_web_view__WEBPACK_IMPORTED_MODULE_1___default.a(options);
+  browserWindow.on('closed', function () {
+    console.log('closed!');
+    browserWindow = null;
+  });
   browserWindow.loadURL('./ui/index.html');
 
   var closeLoader = function closeLoader() {
@@ -12635,8 +12591,7 @@ __webpack_require__.r(__webpack_exports__);
   browserWindow.webContents.on('GENERATE_FIELD', function (dto) {
     try {
       var params = JSON.parse(dto);
-      var numEdgePoints = params.numEdgePoints,
-          numFieldPoints = params.numFieldPoints; // const sketchObject = context.selection.firstObject();
+      console.log(params); // const sketchObject = context.selection.firstObject();
 
       var selection = NSDocumentController.sharedDocumentController().currentDocument().selectedLayers().layers();
 
@@ -12647,7 +12602,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var sketchObject = selection.firstObject();
-      Object(_main_triangle_field__WEBPACK_IMPORTED_MODULE_2__["default"])(context, sketchObject, numEdgePoints, numFieldPoints);
+      var start = new Date();
+      console.log('startRendering', start.getTime());
+      Object(_main_triangle_field__WEBPACK_IMPORTED_MODULE_2__["default"])(context, sketchObject, params);
+      var end = new Date();
+      console.log('done rendering???', end.getTime() - start.getTime());
       closeLoader();
     } catch (error) {
       console.log('error:', error);
@@ -12685,26 +12644,28 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-function createLine(p1, p2) {
+function createLine(p1, p2, thickness, name) {
   var path = NSBezierPath.bezierPath();
   path.moveToPoint(NSMakePoint(p1.getX(), p1.getY()));
   path.lineToPoint(NSMakePoint(p2.getX(), p2.getY()));
   var shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path));
   var border = shape.style().addStylePartOfType(1);
   border.color = MSColor.colorWithRGBADictionary(Object(_util_Math__WEBPACK_IMPORTED_MODULE_0__["getRandomColor"])());
-  border.thickness = 2;
-  shape.name = 'name test';
+  border.thickness = thickness;
+  shape.name = name;
   return shape;
 }
 
 var Line =
 /*#__PURE__*/
 function () {
-  function Line(p1, p2) {
+  function Line(p1, p2, thickness, name) {
     _classCallCheck(this, Line);
 
     this.p1 = p1;
     this.p2 = p2;
+    this.thickness = thickness;
+    this.name = name;
     this.id = _toConsumableArray(this.p1.toArray()).concat(_toConsumableArray(this.p2.toArray())).sort(function (a, b) {
       return a - b;
     }).reduce(function (acc, num) {
@@ -12725,7 +12686,7 @@ function () {
   }, {
     key: "getShape",
     value: function getShape() {
-      return createLine(this.p1, this.p2);
+      return createLine(this.p1, this.p2, this.thickness, this.name);
     }
   }, {
     key: "getId",
@@ -13032,7 +12993,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var FIELD_SIZE = 100;
+var distributionStrategy = {
+  random: createRandomField,
+  parabolic: createGaussianField,
+  grid: createSquareField,
+  radial: createRadialField
+};
 
 function getBounds(points) {
   var dimensions = {
@@ -13068,12 +13034,12 @@ function getBounds(points) {
   return fieldDimensions;
 }
 
-function createField(numPoints, edgePoints) {
+function createRandomField(numFieldPoints, edgePoints) {
   var centroid = Object(_util_Math__WEBPACK_IMPORTED_MODULE_4__["getCentroid"])(edgePoints);
   var bounds = getBounds(edgePoints);
   var points = [];
 
-  while (points.length < numPoints) {
+  while (points.length < numFieldPoints) {
     var potentialPoint = new _geometry_Point__WEBPACK_IMPORTED_MODULE_6__["default"](Object(_util_Math__WEBPACK_IMPORTED_MODULE_4__["getRandomNum"])(bounds.rangeX) + bounds.minX, Object(_util_Math__WEBPACK_IMPORTED_MODULE_4__["getRandomNum"])(bounds.rangeY) + bounds.minY);
 
     if (Object(_util_Intersection__WEBPACK_IMPORTED_MODULE_5__["pointIsInsidePolygon"])(edgePoints, potentialPoint)) {
@@ -13086,17 +13052,15 @@ function createField(numPoints, edgePoints) {
   };
 }
 
-function createGaussianField(numPoints, edgePoints) {
+function createGaussianField(numFieldPoints, edgePoints) {
   var centroid = Object(_util_Math__WEBPACK_IMPORTED_MODULE_4__["getCentroid"])(edgePoints);
   var bounds = getBounds(edgePoints);
   var maxRadius = Math.max(bounds.maxX - centroid.x, centroid.x - bounds.minX, bounds.maxY - centroid.x, centroid.y - bounds.minY);
   var points = [];
 
-  while (points.length < numPoints) {
-    var angle = 2 * Math.PI * Math.random(); // const radius = maxRadius * Math.random();
-    // const radius = maxRadius * Math.pow(Math.random(), 1.5);
-
-    var radius = maxRadius * (1 - Math.pow(Math.random(), 1.5));
+  while (points.length < numFieldPoints) {
+    var angle = 2 * Math.PI * Math.random();
+    var radius = maxRadius * Math.pow(Math.random(), 1.5);
     var potentialPoint = new _geometry_Point__WEBPACK_IMPORTED_MODULE_6__["default"](radius * Math.cos(angle) + centroid.x, radius * Math.sin(angle) + centroid.y);
 
     if (Object(_util_Intersection__WEBPACK_IMPORTED_MODULE_5__["pointIsInsidePolygon"])(edgePoints, potentialPoint)) {
@@ -13109,7 +13073,7 @@ function createGaussianField(numPoints, edgePoints) {
   };
 }
 
-function createSquareField(numPoints, edgePoints) {
+function createSquareField(numFieldPoints, edgePoints) {
   var bounds = getBounds(edgePoints);
   var numRows = 10;
   var numColumns = 10;
@@ -13132,7 +13096,7 @@ function createSquareField(numPoints, edgePoints) {
   };
 }
 
-function createRadialField(numPoints, edgePoints) {
+function createRadialField(numFieldPoints, edgePoints) {
   var centroid = Object(_util_Math__WEBPACK_IMPORTED_MODULE_4__["getCentroid"])(edgePoints);
   var bounds = getBounds(edgePoints);
   var maxRadius = Math.max(bounds.maxX - centroid.x, centroid.x - bounds.minX, bounds.maxY - centroid.x, centroid.y - bounds.minY);
@@ -13160,12 +13124,12 @@ function createRadialField(numPoints, edgePoints) {
   };
 }
 
-function getPointsFromShape(shape, numPoints) {
+function getPointsFromShape(shape, numFieldPoints) {
   var path = shape.pathInFrameWithTransforms();
   var bezierPath = NSBezierPath.bezierPathWithPath(path);
   var length = Math.floor(bezierPath.length());
-  var stride = length / numPoints;
-  var indices = new Array(numPoints).fill(null).map(function (n, i) {
+  var stride = length / numFieldPoints;
+  var indices = new Array(numFieldPoints).fill(null).map(function (n, i) {
     return Math.floor(i * stride);
   }); // TODO: use control points:
   // console.log(length, bezierPath)
@@ -13183,13 +13147,19 @@ function getPointsFromShape(shape, numPoints) {
   return points;
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (function (context, shape, numEdgePoint, numPoints) {
+/* harmony default export */ __webpack_exports__["default"] = (function (context, shape, params) {
+  var numEdgePoints = params.numEdgePoints,
+      numFieldPoints = params.numFieldPoints,
+      renderPoints = params.renderPoints,
+      renderLines = params.renderLines,
+      renderTriangles = params.renderTriangles,
+      distribution = params.distribution,
+      lineWidth = params.lineWidth,
+      pointRadius = params.pointRadius;
   var page = context.document.currentPage();
-  var edgePoints = getPointsFromShape(shape, numEdgePoint);
-  var pointField = createField(numPoints, edgePoints); // const pointField = createGaussianField(numPoints, edgePoints);
-  // const pointField = createSquareField(numPoints, edgePoints);
-  // const pointField = createRadialField(numPoints, edgePoints);
-
+  var edgePoints = getPointsFromShape(shape, numEdgePoints);
+  var distributionFn = distributionStrategy[distribution] || createRandomField;
+  var pointField = distributionFn(numFieldPoints, edgePoints);
   var allPoints = edgePoints.concat(pointField.points);
   var pointArray = allPoints.map(function (point) {
     return point.toArray();
@@ -13213,62 +13183,71 @@ function getPointsFromShape(shape, numPoints) {
       p2: allPoints[i2]
     };
   });
-  var uniqueLines = trianglePoints.map(function (_ref3) {
-    var p0 = _ref3.p0,
-        p1 = _ref3.p1,
-        p2 = _ref3.p2;
-    var line0 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_9__["default"](p0, p1);
-    var line1 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_9__["default"](p1, p2);
-    var line2 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_9__["default"](p2, p0);
-    return [line0, line1, line2];
-  }).reduce(function (uniqueList, triangleLines) {
-    triangleLines.forEach(function (line) {
-      if (!uniqueList.some(function (_line) {
-        return _line.getId() === line.getId();
-      })) {
-        uniqueList.push(line);
-      }
-    });
-    return uniqueList;
-  }, []);
-  var lineLayers = uniqueLines.map(function (line) {
-    return line.getShape();
-  });
-  var triangleLayers = trianglePoints.map(function (_ref4) {
-    var p0 = _ref4.p0,
-        p1 = _ref4.p1,
-        p2 = _ref4.p2;
-    return new _geometry_Triangle__WEBPACK_IMPORTED_MODULE_7__["default"](p0, p1, p2);
-  }).map(function (triangle) {
-    return triangle.getShape();
-  });
-  var pointLayers = allPoints.map(function (p, index) {
-    return new _geometry_Oval__WEBPACK_IMPORTED_MODULE_8__["default"](p, 7, "Point".concat(index));
-  }).map(function (oval) {
-    return oval.getShape();
-  });
   var parentGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
     parent: page,
     name: 'triangle field'
   });
-  var triangleGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
-    parent: parentGroup,
-    name: 'triangles',
-    layers: triangleLayers
-  });
-  var lineGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
-    parent: parentGroup,
-    name: 'lines',
-    layers: lineLayers
-  });
-  var pointGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
-    parent: parentGroup,
-    name: 'points',
-    layers: pointLayers
-  });
-  triangleGroup.adjustToFit();
-  lineGroup.adjustToFit();
-  pointGroup.adjustToFit();
+
+  if (renderTriangles) {
+    var triangleLayers = trianglePoints.map(function (_ref3) {
+      var p0 = _ref3.p0,
+          p1 = _ref3.p1,
+          p2 = _ref3.p2;
+      return new _geometry_Triangle__WEBPACK_IMPORTED_MODULE_7__["default"](p0, p1, p2);
+    }).map(function (triangle) {
+      return triangle.getShape();
+    });
+    var triangleGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
+      parent: parentGroup,
+      name: 'triangles',
+      layers: triangleLayers
+    });
+    triangleGroup.adjustToFit();
+  }
+
+  if (renderLines) {
+    var lineLayers = trianglePoints.map(function (_ref4) {
+      var p0 = _ref4.p0,
+          p1 = _ref4.p1,
+          p2 = _ref4.p2;
+      var line0 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_9__["default"](p0, p1, lineWidth, 'some-name');
+      var line1 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_9__["default"](p1, p2, lineWidth, 'some-name');
+      var line2 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_9__["default"](p2, p0, lineWidth, 'some-name');
+      return [line0, line1, line2];
+    }).reduce(function (uniqueList, triangleLines) {
+      triangleLines.forEach(function (line) {
+        if (!uniqueList.some(function (_line) {
+          return _line.getId() === line.getId();
+        })) {
+          uniqueList.push(line);
+        }
+      });
+      return uniqueList;
+    }, []).map(function (line) {
+      return line.getShape();
+    });
+    var lineGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
+      parent: parentGroup,
+      name: 'lines',
+      layers: lineLayers
+    });
+    lineGroup.adjustToFit();
+  }
+
+  if (renderPoints) {
+    var pointLayers = allPoints.map(function (p, index) {
+      return new _geometry_Oval__WEBPACK_IMPORTED_MODULE_8__["default"](p, pointRadius, "Point".concat(index));
+    }).map(function (oval) {
+      return oval.getShape();
+    });
+    var pointGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
+      parent: parentGroup,
+      name: 'points',
+      layers: pointLayers
+    });
+    pointGroup.adjustToFit();
+  }
+
   parentGroup.adjustToFit();
 });
 
