@@ -4,15 +4,6 @@ function getPosNeg() {
   return Math.random() < 0.5 ? -1 : 1;
 }
 
-export function getRandomColor() {
-  return {
-    r: Math.random(),
-    g: Math.random(),
-    b: Math.random(),
-    a: 1,
-  };
-}
-
 export function getRandomNum(mult) {
   return mult * Math.random();
 }

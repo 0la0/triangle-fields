@@ -8,7 +8,10 @@ import Point from '../geometry/Point';
 import Triangle from '../geometry/Triangle';
 import Oval from '../geometry/Oval';
 import Line from '../geometry/Line';
+// import Color from '../util/Color.js';
+import colorManager from '../util/ColorManager';
 
+// TODO: move distribution to util file
 const distributionStrategy = {
   random: createRandomField,
   parabolic: createGaussianField,
@@ -161,6 +164,10 @@ export default function(context, shape, params) {
     lineWidth,
     pointRadius
   } = params;
+
+  const colors = ['FF0000', '0000FF'];
+  colorManager.setFromHexList(colors);
+  colorManager.setGenerationMethod('continuous');
 
   const page = context.document.currentPage();
   const edgePoints = getPointsFromShape(shape, numEdgePoints);

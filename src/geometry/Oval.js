@@ -1,11 +1,11 @@
-import { getRandomColor } from '../util/Math';
+import colorManager from '../util/ColorManager';
 
 function createOval(centerPoint, radius, name) {
   const ovalShape = MSOvalShape.alloc().init();
   ovalShape.frame = MSRect.rectWithRect(NSMakeRect(centerPoint.getX(), centerPoint.getY(), radius, radius));
   const shapeGroup = MSShapeGroup.shapeWithPath(ovalShape);
   const fill = shapeGroup.style().addStylePartOfType(0);
-  fill.color = MSColor.colorWithRGBADictionary(getRandomColor());
+  fill.color = MSColor.colorWithRGBADictionary(colorManager.getRandomColor());
   shapeGroup.name = name || 'Point';
   return shapeGroup;
 }

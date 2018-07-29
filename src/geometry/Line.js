@@ -1,4 +1,4 @@
-import { getRandomColor } from '../util/Math';
+import colorManager from '../util/ColorManager';
 
 function createLine(p1, p2, thickness, name) {
   const path = NSBezierPath.bezierPath();
@@ -7,7 +7,7 @@ function createLine(p1, p2, thickness, name) {
 
   const shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path));
   const border = shape.style().addStylePartOfType(1);
-  border.color = MSColor.colorWithRGBADictionary(getRandomColor());
+  border.color = MSColor.colorWithRGBADictionary(colorManager.getRandomColor());
   border.thickness = thickness;
   shape.name = name;
   return shape;

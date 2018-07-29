@@ -1,4 +1,4 @@
-import { getRandomColor } from '../util/Math';
+import colorManager from '../util/ColorManager';
 
 function createTriangle(p1, p2, p3) {
   const path = NSBezierPath.bezierPath();
@@ -12,7 +12,7 @@ function createTriangle(p1, p2, p3) {
   // border.color = MSColor.colorWithRGBADictionary(getRandomColor());
   // border.thickness = 1;
   const fill = shape.style().addStylePartOfType(0); // `0` constant indicates that we need a `fill` part to be created
-  fill.color = MSColor.colorWithRGBADictionary(getRandomColor());
+  fill.color = MSColor.colorWithRGBADictionary(colorManager.getRandomColor());
   return shape;
 }
 

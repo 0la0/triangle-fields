@@ -12571,7 +12571,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _main_triangle_field__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../main/triangle-field */ "./src/main/triangle-field.js");
 
 
- // import { isWebviewPresent, sendToWebview } from 'sketch-module-web-view/remote';
 
 /* harmony default export */ __webpack_exports__["default"] = (function (context) {
   var options = {
@@ -12579,8 +12578,7 @@ __webpack_require__.r(__webpack_exports__);
   };
   var browserWindow = new sketch_module_web_view__WEBPACK_IMPORTED_MODULE_1___default.a(options);
   browserWindow.on('closed', function () {
-    console.log('closed!');
-    browserWindow = null;
+    browserWindow = null; // TODO: exit plugin and clean up resources
   });
   browserWindow.loadURL('./ui/index.html');
 
@@ -12603,10 +12601,8 @@ __webpack_require__.r(__webpack_exports__);
 
       var sketchObject = selection.firstObject();
       var start = new Date();
-      console.log('startRendering', start.getTime());
       Object(_main_triangle_field__WEBPACK_IMPORTED_MODULE_2__["default"])(context, sketchObject, params);
       var end = new Date();
-      console.log('done rendering???', end.getTime() - start.getTime());
       closeLoader();
     } catch (error) {
       console.log('error:', error);
@@ -12627,7 +12623,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Line; });
-/* harmony import */ var _util_Math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/Math */ "./src/util/Math.js");
+/* harmony import */ var _util_ColorManager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/ColorManager */ "./src/util/ColorManager.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -12650,7 +12646,7 @@ function createLine(p1, p2, thickness, name) {
   path.lineToPoint(NSMakePoint(p2.getX(), p2.getY()));
   var shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path));
   var border = shape.style().addStylePartOfType(1);
-  border.color = MSColor.colorWithRGBADictionary(Object(_util_Math__WEBPACK_IMPORTED_MODULE_0__["getRandomColor"])());
+  border.color = MSColor.colorWithRGBADictionary(_util_ColorManager__WEBPACK_IMPORTED_MODULE_0__["default"].getRandomColor());
   border.thickness = thickness;
   shape.name = name;
   return shape;
@@ -12759,7 +12755,7 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Oval; });
-/* harmony import */ var _util_Math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/Math */ "./src/util/Math.js");
+/* harmony import */ var _util_ColorManager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/ColorManager */ "./src/util/ColorManager.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -12773,7 +12769,7 @@ function createOval(centerPoint, radius, name) {
   ovalShape.frame = MSRect.rectWithRect(NSMakeRect(centerPoint.getX(), centerPoint.getY(), radius, radius));
   var shapeGroup = MSShapeGroup.shapeWithPath(ovalShape);
   var fill = shapeGroup.style().addStylePartOfType(0);
-  fill.color = MSColor.colorWithRGBADictionary(Object(_util_Math__WEBPACK_IMPORTED_MODULE_0__["getRandomColor"])());
+  fill.color = MSColor.colorWithRGBADictionary(_util_ColorManager__WEBPACK_IMPORTED_MODULE_0__["default"].getRandomColor());
   shapeGroup.name = name || 'Point';
   return shapeGroup;
 }
@@ -12902,7 +12898,7 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Triangle; });
-/* harmony import */ var _util_Math__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/Math */ "./src/util/Math.js");
+/* harmony import */ var _util_ColorManager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/ColorManager */ "./src/util/ColorManager.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -12923,7 +12919,7 @@ function createTriangle(p1, p2, p3) {
 
   var fill = shape.style().addStylePartOfType(0); // `0` constant indicates that we need a `fill` part to be created
 
-  fill.color = MSColor.colorWithRGBADictionary(Object(_util_Math__WEBPACK_IMPORTED_MODULE_0__["getRandomColor"])());
+  fill.color = MSColor.colorWithRGBADictionary(_util_ColorManager__WEBPACK_IMPORTED_MODULE_0__["default"].getRandomColor());
   return shape;
 }
 
@@ -12975,6 +12971,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _geometry_Triangle__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../geometry/Triangle */ "./src/geometry/Triangle.js");
 /* harmony import */ var _geometry_Oval__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../geometry/Oval */ "./src/geometry/Oval.js");
 /* harmony import */ var _geometry_Line__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../geometry/Line */ "./src/geometry/Line.js");
+/* harmony import */ var _util_ColorManager__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../util/ColorManager */ "./src/util/ColorManager.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -12992,6 +12989,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+ // import Color from '../util/Color.js';
+
+ // TODO: move distribution to util file
 
 var distributionStrategy = {
   random: createRandomField,
@@ -13156,6 +13156,9 @@ function getPointsFromShape(shape, numFieldPoints) {
       distribution = params.distribution,
       lineWidth = params.lineWidth,
       pointRadius = params.pointRadius;
+  var colors = ['FF0000', '0000FF'];
+  _util_ColorManager__WEBPACK_IMPORTED_MODULE_10__["default"].setFromHexList(colors);
+  _util_ColorManager__WEBPACK_IMPORTED_MODULE_10__["default"].setGenerationMethod('continuous');
   var page = context.document.currentPage();
   var edgePoints = getPointsFromShape(shape, numEdgePoints);
   var distributionFn = distributionStrategy[distribution] || createRandomField;
@@ -13253,6 +13256,152 @@ function getPointsFromShape(shape, numFieldPoints) {
 
 /***/ }),
 
+/***/ "./src/util/Color.js":
+/*!***************************!*\
+  !*** ./src/util/Color.js ***!
+  \***************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Color; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+// https://en.wikipedia.org/wiki/Smoothstep
+function smoothstep(x) {
+  return 6 * Math.pow(x, 5) - 15 * Math.pow(x, 4) + 10 * Math.pow(x, 3);
+}
+
+function getValueBetweenTwoPoints(y1, y2) {
+  var range = y2 - y1;
+  return y1 + range * smoothstep(Math.random());
+}
+
+var Color =
+/*#__PURE__*/
+function () {
+  function Color(r, g, b) {
+    _classCallCheck(this, Color);
+
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.a = 1;
+  }
+
+  _createClass(Color, [{
+    key: "interpolateWith",
+    value: function interpolateWith(color) {
+      var r = getValueBetweenTwoPoints(this.r, color.r);
+      var g = getValueBetweenTwoPoints(this.g, color.g);
+      var b = getValueBetweenTwoPoints(this.b, color.b);
+      return new Color(r, g, b);
+    }
+  }], [{
+    key: "fromHex",
+    value: function fromHex(hexValue) {
+      try {
+        var r = parseInt(hexValue.substring(0, 2), 16);
+        var g = parseInt(hexValue.substring(2, 4), 16);
+        var b = parseInt(hexValue.substring(4, 6), 16);
+        return new Color(r / 255, g / 255, b / 255);
+      } catch (error) {
+        console.log('error', error);
+        return new Color(1, 0, 0);
+      }
+    }
+  }]);
+
+  return Color;
+}();
+
+
+
+/***/ }),
+
+/***/ "./src/util/ColorManager.js":
+/*!**********************************!*\
+  !*** ./src/util/ColorManager.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Color__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Color */ "./src/util/Color.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var ColorManager =
+/*#__PURE__*/
+function () {
+  function ColorManager(colors) {
+    _classCallCheck(this, ColorManager);
+
+    this.colors = [];
+  }
+
+  _createClass(ColorManager, [{
+    key: "setFromHexList",
+    value: function setFromHexList(hexList) {
+      this.colors = hexList.map(_Color__WEBPACK_IMPORTED_MODULE_0__["default"].fromHex);
+    }
+  }, {
+    key: "setGenerationMethod",
+    value: function setGenerationMethod(generationMethod) {
+      this.generationMethod = generationMethod;
+    }
+  }, {
+    key: "getRandomColorIndex",
+    value: function getRandomColorIndex() {
+      return Math.floor(this.colors.length * Math.random());
+    }
+  }, {
+    key: "generateColorFromContinuousSpace",
+    value: function generateColorFromContinuousSpace() {
+      if (this.colors.length < 2) {
+        return this.colors[0];
+      }
+
+      var index1 = this.getRandomColorIndex();
+      var index2 = this.getRandomColorIndex();
+
+      while (index1 === index2) {
+        index2 = this.getRandomColorIndex();
+      }
+
+      return this.colors[index1].interpolateWith(this.colors[index2]);
+    }
+  }, {
+    key: "generateColorFromDiscreteSpace",
+    value: function generateColorFromDiscreteSpace() {
+      return this.colors[this.getRandomColorIndex()];
+    }
+  }, {
+    key: "getRandomColor",
+    value: function getRandomColor() {
+      return this.generationMethod === 'continuous' ? this.generateColorFromContinuousSpace() : this.generateColorFromDiscreteSpace();
+    }
+  }]);
+
+  return ColorManager;
+}();
+
+var instance = new ColorManager();
+/* harmony default export */ __webpack_exports__["default"] = (instance);
+
+/***/ }),
+
 /***/ "./src/util/Intersection.js":
 /*!**********************************!*\
   !*** ./src/util/Intersection.js ***!
@@ -13345,12 +13494,11 @@ function pointIsInsidePolygon(polygon, p) {
 /*!**************************!*\
   !*** ./src/util/Math.js ***!
   \**************************/
-/*! exports provided: getRandomColor, getRandomNum, IntArray, getCentroid */
+/*! exports provided: getRandomNum, IntArray, getCentroid */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRandomColor", function() { return getRandomColor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRandomNum", function() { return getRandomNum; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "IntArray", function() { return IntArray; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCentroid", function() { return getCentroid; });
@@ -13361,14 +13509,6 @@ function getPosNeg() {
   return Math.random() < 0.5 ? -1 : 1;
 }
 
-function getRandomColor() {
-  return {
-    r: Math.random(),
-    g: Math.random(),
-    b: Math.random(),
-    a: 1
-  };
-}
 function getRandomNum(mult) {
   return mult * Math.random();
 }
