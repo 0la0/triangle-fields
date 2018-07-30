@@ -13155,10 +13155,11 @@ function getPointsFromShape(shape, numFieldPoints) {
       renderTriangles = params.renderTriangles,
       distribution = params.distribution,
       lineWidth = params.lineWidth,
-      pointRadius = params.pointRadius;
-  var colors = ['FF0000', '0000FF'];
+      pointRadius = params.pointRadius,
+      colors = params.colors,
+      colorDistribution = params.colorDistribution;
   _util_ColorManager__WEBPACK_IMPORTED_MODULE_10__["default"].setFromHexList(colors);
-  _util_ColorManager__WEBPACK_IMPORTED_MODULE_10__["default"].setGenerationMethod('continuous');
+  _util_ColorManager__WEBPACK_IMPORTED_MODULE_10__["default"].setGenerationMethod(colorDistribution);
   var page = context.document.currentPage();
   var edgePoints = getPointsFromShape(shape, numEdgePoints);
   var distributionFn = distributionStrategy[distribution] || createRandomField;

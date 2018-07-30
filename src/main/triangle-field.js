@@ -162,12 +162,13 @@ export default function(context, shape, params) {
     renderTriangles,
     distribution,
     lineWidth,
-    pointRadius
+    pointRadius,
+    colors,
+    colorDistribution,
   } = params;
 
-  const colors = ['FF0000', '0000FF'];
   colorManager.setFromHexList(colors);
-  colorManager.setGenerationMethod('continuous');
+  colorManager.setGenerationMethod(colorDistribution);
 
   const page = context.document.currentPage();
   const edgePoints = getPointsFromShape(shape, numEdgePoints);

@@ -8,8 +8,11 @@ html {
 }
 
 html, body {
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
+  position: relative;
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   font-size: 18px;
   background-color: var(--color-background);
@@ -58,15 +61,15 @@ button {
 
 .loader {
   display: none;
-  position: relative;
+  /* position: relative; */
 }
 
 .loader-active {
   position: absolute;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background-color: rgba(1, 1, 1, 0.5);
   display: flex;
   flex-direction: column;
@@ -98,6 +101,32 @@ button {
 .shape-param-active {
   opacity: 1;
   transform: scaleY(1);
+}
+
+.color-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 4px 0;
+}
+.color-container:hover > .remove-color-button {
+  opacity: 1;
+}
+.color-preview {
+  width: 30px;
+  height: 30px;
+}
+.color-input {
+  width: 80px;
+}
+.color-input-invalid {
+  border: 2px solid red;
+  border-radius: 4px;
+}
+.remove-color-button {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
 }
 
 .checkbox-label {

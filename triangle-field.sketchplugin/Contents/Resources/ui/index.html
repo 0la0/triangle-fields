@@ -91,56 +91,74 @@
       </fieldset>
 
       <fieldset>
-          <legend>Point Distribution</legend>
-          <div class="row">
-            <input
-              type="radio"
-              id="distributionRandom"
-              name="distribution"
-              class="checkbox-input checkbox-input-hidden"
-              value="random"
-              checked
-            />
-            <label for="distributionRandom" class="checkbox-label"></label>
-            <span>Random</span>
-          </div>
-          <div class="row">
-            <input
-              type="radio"
-              id="distributionParabolic"
-              name="distribution"
-              class="checkbox-input checkbox-input-hidden"
-              value="parabolic"
-            />
-            <label for="distributionParabolic" class="checkbox-label"></label>
-            <span>Parabolic</span>
-          </div>
-          <div class="row">
-            <input
-              type="radio"
-              id="distributionGrid"
-              name="distribution"
-              class="checkbox-input checkbox-input-hidden"
-              value="grid"
-            />
-            <label for="distributionGrid" class="checkbox-label"></label>
-            <span>Grid</span>
-          </div>
-          <div class="row">
-            <input
-              type="radio"
-              id="distributionRadial"
-              name="distribution"
-              class="checkbox-input checkbox-input-hidden"
-              value="radial"
-            />
-            <label for="distributionRadial" class="checkbox-label"></label>
-            <span>Radial</span>
-          </div>
+        <legend>Point Distribution</legend>
+        <div class="row">
+          <input
+            type="radio"
+            id="distributionRandom"
+            name="distribution"
+            class="checkbox-input checkbox-input-hidden"
+            value="random"
+            checked
+          />
+          <label for="distributionRandom" class="checkbox-label"></label>
+          <span>Random</span>
+        </div>
+        <div class="row">
+          <input
+            type="radio"
+            id="distributionParabolic"
+            name="distribution"
+            class="checkbox-input checkbox-input-hidden"
+            value="parabolic"
+          />
+          <label for="distributionParabolic" class="checkbox-label"></label>
+          <span>Parabolic</span>
+        </div>
+        <div class="row">
+          <input
+            type="radio"
+            id="distributionGrid"
+            name="distribution"
+            class="checkbox-input checkbox-input-hidden"
+            value="grid"
+          />
+          <label for="distributionGrid" class="checkbox-label"></label>
+          <span>Grid</span>
+        </div>
+        <div class="row">
+          <input
+            type="radio"
+            id="distributionRadial"
+            name="distribution"
+            class="checkbox-input checkbox-input-hidden"
+            value="radial"
+          />
+          <label for="distributionRadial" class="checkbox-label"></label>
+          <span>Radial</span>
+        </div>
       </fieldset>
     </div>
 
+    <fieldset>
+      <legend>Colors</legend>
+      <div id="colorContainer"></div>
+      <div class="row">
+        <span>Discrete</span>
+        <div class="row">
+          <input
+            type="checkbox"
+            id="colorDistribution"
+            class="checkbox-input checkbox-input-hidden"
+            checked
+          />
+          <label for="colorDistribution" class="checkbox-label"></label>
+          <span>Continuous</span>
+        </div>
+        <button id="addColor">Add Color</button>
+      </div>
 
+    </fieldset>
 
     <button id="generate">Generate</button>
     <div id="loader" class="loader">

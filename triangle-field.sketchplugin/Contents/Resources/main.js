@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-var domIds = ['numEdgePoints', 'numFieldPoints', 'points', 'lines', 'triangles', 'generate', 'loader', 'pointRadius', 'pointRadiusContainer', 'lineWidth', 'lineWidthContainer', 'distributionRandom', 'distributionParabolic', 'distributionGrid', 'distributionRadial'];
+var domIds = ['numEdgePoints', 'numFieldPoints', 'points', 'lines', 'triangles', 'generate', 'loader', 'pointRadius', 'pointRadiusContainer', 'lineWidth', 'lineWidthContainer', 'distributionRandom', 'distributionParabolic', 'distributionGrid', 'distributionRadial', 'colorContainer', 'addColor', 'colorDistribution'];
 var dom = {};
 var params = {
   numEdgePoints: 20,
@@ -103,11 +103,14 @@ var params = {
   renderTriangles: true,
   distribution: 'random',
   lineWidth: 4,
-  pointRadius: 5
+  pointRadius: 5,
+  colors: [],
+  colorDistribution: 'continuous'
 };
 var LOADER_ACTIVE = 'loader-active';
 var SHAPE_PARAM_ACTIVE = 'shape-param-active';
 var TIME_DELAY = 50;
+var colorPickerCount = 0;
 
 function callPlugin(actionName) {
   if (!actionName) {
@@ -123,14 +126,83 @@ function callPlugin(actionName) {
   }
 }
 
+function isValidHexColor(hexValue) {
+  if (hexValue.length !== 6) {
+    return false;
+  }
+
+  return [parseInt(hexValue.substring(0, 2), 16), parseInt(hexValue.substring(2, 4), 16), parseInt(hexValue.substring(4, 6), 16)].every(function (num) {
+    return num >= 0 && num <= 255;
+  });
+}
+
+function getRandomColorComponent() {
+  var str = Number(Math.floor(256 * Math.random())).toString(16).toUpperCase();
+  var leftPad = str.length > 1 ? '' : '0';
+  return "".concat(leftPad).concat(str);
+}
+
+function getRandomColor() {
+  return "".concat(getRandomColorComponent()).concat(getRandomColorComponent()).concat(getRandomColorComponent());
+}
+
+function addColorPicker(suppressDelete) {
+  var id = "input".concat(++colorPickerCount);
+  var colorString = getRandomColor();
+  var inputElement = document.createElement('input');
+  var preview = document.createElement('div');
+  var label = document.createElement('label');
+  var container = document.createElement('div');
+  var closeButton = document.createElement('button');
+  inputElement.addEventListener('change', function (event) {
+    var hexString = event.target.value;
+    var isValid = isValidHexColor(hexString);
+
+    if (isValid) {
+      preview.style.setProperty('background-color', "#".concat(hexString));
+      inputElement.classList.remove('color-input-invalid');
+    } else {
+      inputElement.classList.add('color-input-invalid');
+    }
+  });
+  closeButton.addEventListener('click', function () {
+    return dom.colorContainer.removeChild(container);
+  });
+  preview.classList.add('color-preview');
+  preview.style.setProperty('background-color', "#".concat(colorString));
+  inputElement.setAttribute('type', 'text');
+  inputElement.setAttribute('value', colorString);
+  inputElement.setAttribute('id', id);
+  inputElement.classList.add('color-input');
+  label.setAttribute('for', id);
+  closeButton.innerText = 'X';
+  closeButton.classList.add('remove-color-button');
+  container.classList.add('color-container');
+  container.appendChild(preview);
+  container.appendChild(inputElement);
+  container.appendChild(label);
+
+  if (!suppressDelete) {
+    container.appendChild(closeButton);
+  }
+
+  dom.colorContainer.appendChild(container);
+}
+
+function getAllColors() {
+  var elements = dom.colorContainer.getElementsByClassName('color-input');
+  return Array.prototype.slice.call(elements).map(function (ele) {
+    return ele.value;
+  });
+}
+
 function handleDistributionChange(event) {
   if (!event.target.checked) {
     return;
   }
 
   params.distribution = event.target.value;
-} // TODO: color pallet (min 2) discrete / continuous, field distribution
-
+}
 
 function init() {
   window.closeLoader = function () {
@@ -171,16 +243,32 @@ function init() {
   dom.distributionParabolic.addEventListener('change', handleDistributionChange);
   dom.distributionGrid.addEventListener('change', handleDistributionChange);
   dom.distributionRadial.addEventListener('change', handleDistributionChange);
+  dom.colorDistribution.addEventListener('change', function (event) {
+    return params.colorDistribution = event.target.checked ? 'continuous' : 'discrete';
+  });
   dom.generate.addEventListener('click', function () {
     if (!params.renderPoints && !params.renderLines && !params.renderTriangles) {
       return;
     }
 
+    var colors = getAllColors();
+    var colorsAreValid = colors.every(isValidHexColor);
+
+    if (!colorsAreValid) {
+      return;
+    }
+
+    params.colors = colors;
     dom.loader.classList.add(LOADER_ACTIVE);
     setTimeout(function () {
       return callPlugin('GENERATE_FIELD', JSON.stringify(params));
     }, TIME_DELAY);
   });
+  dom.addColor.addEventListener('click', function () {
+    return addColorPicker();
+  });
+  addColorPicker(true);
+  addColorPicker(true);
 }
 
 document.addEventListener('DOMContentLoaded', init);

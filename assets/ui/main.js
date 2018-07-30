@@ -13,7 +13,10 @@ const domIds = [
   'distributionRandom',
   'distributionParabolic',
   'distributionGrid',
-  'distributionRadial'
+  'distributionRadial',
+  'colorContainer',
+  'addColor',
+  'colorDistribution'
 ];
 const dom = {};
 const params = {
@@ -24,11 +27,14 @@ const params = {
   renderTriangles: true,
   distribution: 'random',
   lineWidth: 4,
-  pointRadius: 5
+  pointRadius: 5,
+  colors: [],
+  colorDistribution: 'continuous'
 };
 const LOADER_ACTIVE = 'loader-active';
 const SHAPE_PARAM_ACTIVE = 'shape-param-active';
 const TIME_DELAY = 50;
+let colorPickerCount = 0;
 
 function callPlugin(actionName) {
   if (!actionName) {
@@ -43,12 +49,75 @@ function callPlugin(actionName) {
   }
 }
 
+function isValidHexColor(hexValue) {
+  if (hexValue.length !== 6) { return false; }
+  return [
+    parseInt(hexValue.substring(0, 2), 16),
+    parseInt(hexValue.substring(2, 4), 16),
+    parseInt(hexValue.substring(4, 6), 16)
+  ]
+  .every(num => num >= 0 && num <= 255);
+}
+
+function getRandomColorComponent() {
+  const str = Number(Math.floor(256 * Math.random())).toString(16).toUpperCase();
+  const leftPad = str.length > 1 ? '' : '0';
+  return `${leftPad}${str}`;
+}
+
+function getRandomColor() {
+  return `${getRandomColorComponent()}${getRandomColorComponent()}${getRandomColorComponent()}`;
+}
+
+function addColorPicker(suppressDelete) {
+  const id = `input${++colorPickerCount}`;
+  const colorString = getRandomColor();
+  const inputElement = document.createElement('input');
+  const preview = document.createElement('div');
+  const label = document.createElement('label');
+  const container = document.createElement('div');
+  const closeButton = document.createElement('button');
+
+  inputElement.addEventListener('change', event => {
+    const hexString = event.target.value;
+    const isValid = isValidHexColor(hexString);
+    if (isValid) {
+      preview.style.setProperty('background-color', `#${hexString}`);
+      inputElement.classList.remove('color-input-invalid');
+    } else {
+      inputElement.classList.add('color-input-invalid');
+    }
+  });
+  closeButton.addEventListener('click', () => dom.colorContainer.removeChild(container));
+  preview.classList.add('color-preview');
+  preview.style.setProperty('background-color', `#${colorString}`);
+  inputElement.setAttribute('type', 'text');
+  inputElement.setAttribute('value', colorString);
+  inputElement.setAttribute('id', id);
+  inputElement.classList.add('color-input');
+  label.setAttribute('for', id);
+  closeButton.innerText = 'X';
+  closeButton.classList.add('remove-color-button');
+  container.classList.add('color-container');
+  container.appendChild(preview);
+  container.appendChild(inputElement);
+  container.appendChild(label);
+  if (!suppressDelete) {
+    container.appendChild(closeButton);
+  }
+  dom.colorContainer.appendChild(container);
+}
+
+function getAllColors() {
+  const elements = dom.colorContainer.getElementsByClassName('color-input');
+  return Array.prototype.slice.call(elements)
+    .map(ele => ele.value);
+}
+
 function handleDistributionChange(event) {
   if (!event.target.checked) { return; }
   params.distribution = event.target.value;
 }
-
-// TODO: color pallet (min 2) discrete / continuous, field distribution
 
 function init() {
   window.closeLoader = () => setTimeout(() => dom.loader.classList.remove(LOADER_ACTIVE), TIME_DELAY);
@@ -77,11 +146,19 @@ function init() {
   dom.distributionParabolic.addEventListener('change', handleDistributionChange);
   dom.distributionGrid.addEventListener('change', handleDistributionChange);
   dom.distributionRadial.addEventListener('change', handleDistributionChange);
-
+  dom.colorDistribution.addEventListener('change', event =>
+    params.colorDistribution = event.target.checked ? 'continuous' : 'discrete');
   dom.generate.addEventListener('click', () => {
     if (!params.renderPoints && !params.renderLines && !params.renderTriangles) { return; }
+    const colors = getAllColors();
+    const colorsAreValid = colors.every(isValidHexColor);
+    if (!colorsAreValid) { return; }
+    params.colors = colors;
     dom.loader.classList.add(LOADER_ACTIVE);
     setTimeout(() => callPlugin('GENERATE_FIELD', JSON.stringify(params)), TIME_DELAY);
   });
+  dom.addColor.addEventListener('click', () => addColorPicker());
+  addColorPicker(true);
+  addColorPicker(true);
 }
 document.addEventListener('DOMContentLoaded', init);
