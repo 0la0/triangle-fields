@@ -133,6 +133,10 @@ function createRadialField(numFieldPoints, edgePoints) {
 }
 
 function getPointsFromShape(shape, numFieldPoints) {
+  const absoluteRect = shape.absoluteRect();
+  const frame = shape.frame();
+  const deltaX = absoluteRect.x() - frame.x();
+  const deltaY = absoluteRect.y() - frame.y();
   const path = shape.pathInFrameWithTransforms();
   const bezierPath = NSBezierPath.bezierPathWithPath(path);
 
@@ -148,7 +152,7 @@ function getPointsFromShape(shape, numFieldPoints) {
 
   const points = indices.map(index => {
     const { x, y } = bezierPath.pointOnPathAtLength(index);
-    return new Point(x, y);
+    return new Point(deltaX + x, deltaY + y);
   });
   return points;
 }

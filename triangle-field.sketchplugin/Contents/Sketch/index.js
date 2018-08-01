@@ -13125,6 +13125,10 @@ function createRadialField(numFieldPoints, edgePoints) {
 }
 
 function getPointsFromShape(shape, numFieldPoints) {
+  var absoluteRect = shape.absoluteRect();
+  var frame = shape.frame();
+  var deltaX = absoluteRect.x() - frame.x();
+  var deltaY = absoluteRect.y() - frame.y();
   var path = shape.pathInFrameWithTransforms();
   var bezierPath = NSBezierPath.bezierPathWithPath(path);
   var length = Math.floor(bezierPath.length());
@@ -13142,7 +13146,7 @@ function getPointsFromShape(shape, numFieldPoints) {
         x = _bezierPath$pointOnPa.x,
         y = _bezierPath$pointOnPa.y;
 
-    return new _geometry_Point__WEBPACK_IMPORTED_MODULE_6__["default"](x, y);
+    return new _geometry_Point__WEBPACK_IMPORTED_MODULE_6__["default"](deltaX + x, deltaY + y);
   });
   return points;
 }
