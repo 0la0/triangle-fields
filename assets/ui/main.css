@@ -1,10 +1,16 @@
 html {
-  --color-background: #292C34;
-  --color-font: #ACB2BE;
-  --color-primary: #72AEEA;
+  --color-background: #ECECEC;
+  --color-font: #515151;
+  --color-primary: #62A9F2;
+  --color-primary-light: #C1DDFA;
   --color-secondary: #CE6664;
-  --color-white: #CCC;
+  --color-grey-dark: #333;
+  --color-grey: #515151;
+  --color-white: #FFF;
   --color-grey-light: #AAA;
+  --color-grey-lighest: #CCC;
+  --animation-time: 0.2s;
+  --animation-time-slow: 0.3s;
 }
 
 html, body {
@@ -31,8 +37,10 @@ p {
 
 input {
   background: none;
-  border: none;
-  padding: 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-grey-dark);
+  border-radius: 2px;
+  padding: 2px;
   margin: 0 8px;
   color: var(--color-font);
   width: 45px;
@@ -51,6 +59,23 @@ button {
   /* font-size: 1em; */
   color: var(--color-background);
   background-color: var(--color-primary);
+}
+
+.card {
+  border: none;
+  background-color: var(--color-white);
+  box-shadow: 0px 1px 8px var(--color-grey-dark);
+  border-radius: 4px;
+  margin: 8px;
+  padding: 0;
+  width: 325px;
+  min-height: 150px;
+}
+
+.card-label {
+  border-bottom: 1px solid red;
+  padding: 4px 0;
+  font-weight: bold;
 }
 
 .row {
@@ -93,9 +118,9 @@ button {
 .shape-param {
   transform: scaleY(0);
   opacity: 0;
-  transform-origin: bottom;
+  transform-origin: center;
   margin: 0 8px;
-  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  transition: transform var(--animation-time-slow) ease, opacity var(--animation-time) ease;
 }
 
 .shape-param-active {
@@ -116,6 +141,7 @@ button {
 .color-preview {
   width: 30px;
   height: 30px;
+  border-radius: 15px;
 }
 .color-input {
   width: 80px;
@@ -126,7 +152,7 @@ button {
 }
 .remove-color-button {
   opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity var(--animation-time) ease-in-out;
 }
 
 .checkbox-label {
@@ -137,11 +163,11 @@ button {
   background-color: var(--color-grey-light);
   border-radius: 16px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color var(--animation-time) ease;
 }
 
 .checkbox-input:checked ~ label {
-  background-color: var(--color-grey-light);
+  background-color: var(--color-primary-light);
 }
 
 .checkbox-label {
@@ -158,14 +184,56 @@ button {
   border-radius: 50%;
   background-color: var(--color-white);
   content: '';
-  transition: left 0.2s ease;
+  box-shadow: 0px 0px 4px var(--color-grey-dark);
+  transition: left var(--animation-time) ease, background-color var(--animation-time) ease, box-shadow var(--animation-time) ease;
 }
 
 .checkbox-input:checked ~ label:after {
   left: 12px;
   background-color: var(--color-primary);
+  box-shadow: 0px 0px 1px var(--color-grey-dark);
 }
 
-.checkbox-input-hidden {
+.input-hidden {
   display: none;
+}
+
+.radio-label {
+  position: relative;
+  display: block;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color var(--animation-time) ease;
+}
+
+.radio-input ~ .radio-label {
+  border: 2px solid var(--color-grey-light);
+  transition: border-color var(--animation-time) ease;
+}
+.radio-input:checked ~ .radio-label {
+  border-color: var(--color-primary);
+}
+
+.radio-label:after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  content: '';
+}
+
+.radio-input ~ label:after {
+  transform: scale(0);
+  transition: transform var(--animation-time-slow) ease;
+}
+
+.radio-input:checked ~ label:after {
+  background-color: var(--color-primary);
+  transform: scale(0.8);
+  transform-origin: center;
 }

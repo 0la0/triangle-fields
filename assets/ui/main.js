@@ -34,6 +34,7 @@ const params = {
 const LOADER_ACTIVE = 'loader-active';
 const SHAPE_PARAM_ACTIVE = 'shape-param-active';
 const TIME_DELAY = 50;
+const HEX_REGEX = /[0-9A-F]{6}$/;
 let colorPickerCount = 0;
 
 function callPlugin(actionName) {
@@ -50,13 +51,8 @@ function callPlugin(actionName) {
 }
 
 function isValidHexColor(hexValue) {
-  if (hexValue.length !== 6) { return false; }
-  return [
-    parseInt(hexValue.substring(0, 2), 16),
-    parseInt(hexValue.substring(2, 4), 16),
-    parseInt(hexValue.substring(4, 6), 16)
-  ]
-  .every(num => num >= 0 && num <= 255);
+  if (!hexValue || typeof hexValue !== 'string') { return false }
+  return HEX_REGEX.test(hexValue.toUpperCase());
 }
 
 function getRandomColorComponent() {
