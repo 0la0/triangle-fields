@@ -1,10 +1,19 @@
 html {
-  --color-background: #292C34;
-  --color-font: #ACB2BE;
-  --color-primary: #72AEEA;
-  --color-secondary: #CE6664;
-  --color-white: #CCC;
+  --color-background: #ECECEC;
+  --color-font: #515151;
+  --color-primary: #4892DE;
+  --color-primary-light: #C1DDFA;
+  --color-secondary: #BBCCFF;
+  --color-tertiary: #E97171;
+  --color-grey-dark: #333;
+  --color-black: #121212;
+  --color-grey: #515151;
+  --color-white: #FFF;
   --color-grey-light: #AAA;
+  --color-grey-lightest: #CCC;
+  --animation-time: 0.2s;
+  --animation-time-slow: 0.3s;
+  --icon-size: 20px;
 }
 
 html, body {
@@ -15,8 +24,10 @@ html, body {
   position: relative;
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   font-size: 18px;
+  font-weight: 200;
   background-color: var(--color-background);
   color: var(--color-font);
+  user-select: none;
 }
 
 h1 {
@@ -31,12 +42,30 @@ p {
 
 input {
   background: none;
+  background-color: var(--color-white);
   border: none;
-  padding: 0;
+  border-bottom: 1px solid var(--color-primary-light);
+  padding: 2px;
   margin: 0 8px;
   color: var(--color-font);
-  width: 45px;
+  width: 90px;
   font-size: 18px;
+  outline-style: none;
+  font-weight: 200;
+  transition: font-weight var(--antimation-time) ease;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  position: relative;
+}
+input:focus {
+  border-bottom: 1px solid var(--color-primary);
+  font-weight: 500;
 }
 
 button {
@@ -47,21 +76,62 @@ button {
   cursor: pointer;
   padding: 8px;
   border-radius: 4px;
-  font-weight: bold;
-  /* font-size: 1em; */
-  color: var(--color-background);
+  color: var(--color-white);
   background-color: var(--color-primary);
+  box-shadow: 0px 1px 4px var(--color-grey-dark);
+  transition: box-shadow var(--animation-time) ease;
+}
+
+.columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.card {
+  border: none;
+  background-color: var(--color-white);
+  box-shadow: 0px 1px 4px var(--color-grey-dark);
+  border-radius: 4px;
+  margin: 8px;
+  width: 325px;
+  position: relative;
+}
+
+.card-label {
+  padding: 8px;
+  font-size: 1.2em;
+  color: var(--color-black);
+  background-color: var(--color-secondary);
+}
+
+.card-content {
+  padding: 8px;
 }
 
 .row {
   display: flex;
   flex-direction: row;
+  justify-content: flex-start;
   margin: 8px 0;
+}
+
+.row-space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .loader {
   display: none;
-  /* position: relative; */
+  font-size: 1.4em;
 }
 
 .loader-active {
@@ -70,11 +140,76 @@ button {
   top: 0;
   right: 0;
   bottom: 0;
+  color: var(--color-white);
   background-color: rgba(1, 1, 1, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+}
+
+.loader-icon-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  margin: 8px 0;
+}
+
+.loader-icon {
+  width: 16px;
+  height: 16px;
+  animation: loader-icon--animate 1.4s infinite ease-in-out, loader-icon-rotate 8s infinite linear;
+  opacity: 0;
+}
+
+.loader-icon-1 {
+  width: 0;
+  height: 0;
+  border-top: 35px solid #69F16D;
+  border-right: 30px solid transparent;
+  transform: rotateZ(20deg);
+}
+
+.loader-icon-2 {
+  width: 0;
+  height: 0;
+  border-left: 30px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 20px solid #6CD2EA;
+  transform: rotateZ(-10deg);
+}
+
+.loader-icon-3 {
+  width: 0;
+  height: 0;
+  border-bottom: 30px solid #F169ED;
+  border-right: 25px solid transparent;
+  transform: rotateZ(28deg);
+}
+
+.loader-icon-2 { animation-delay: 0.2s; }
+.loader-icon-3 { animation-delay: 0.4s; }
+@keyframes loader-icon--animate {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes loader-icon-rotate {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(360deg);
+  }
 }
 
 .sublabel {
@@ -93,9 +228,9 @@ button {
 .shape-param {
   transform: scaleY(0);
   opacity: 0;
-  transform-origin: bottom;
+  transform-origin: center;
   margin: 0 8px;
-  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  transition: transform var(--animation-time-slow) ease, opacity var(--animation-time) ease;
 }
 
 .shape-param-active {
@@ -110,12 +245,18 @@ button {
   align-items: center;
   margin: 4px 0;
 }
-.color-container:hover > .remove-color-button {
-  opacity: 1;
+.color-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
+
 .color-preview {
   width: 30px;
   height: 30px;
+  border-radius: 15px;
+  margin: 0 4px;
 }
 .color-input {
   width: 80px;
@@ -123,10 +264,6 @@ button {
 .color-input-invalid {
   border: 2px solid red;
   border-radius: 4px;
-}
-.remove-color-button {
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
 }
 
 .checkbox-label {
@@ -137,11 +274,11 @@ button {
   background-color: var(--color-grey-light);
   border-radius: 16px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color var(--animation-time) ease;
 }
 
-.checkbox-input:checked ~ label {
-  background-color: var(--color-grey-light);
+.checkbox-input:checked ~ .checkbox-label {
+  background-color: var(--color-primary-light);
 }
 
 .checkbox-label {
@@ -153,19 +290,127 @@ button {
   left: 0;
   top: -2px;
   display: block;
-  width: 20px;
-  height: 20px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   border-radius: 50%;
   background-color: var(--color-white);
   content: '';
-  transition: left 0.2s ease;
+  box-shadow: 0px 0px 4px var(--color-grey-dark);
+  transition: left var(--animation-time) ease, background-color var(--animation-time) ease, box-shadow var(--animation-time) ease;
 }
 
 .checkbox-input:checked ~ label:after {
   left: 12px;
   background-color: var(--color-primary);
+  box-shadow: 0px 0px 1px var(--color-grey-dark);
 }
 
-.checkbox-input-hidden {
+.input-hidden {
   display: none;
+}
+
+.radio-label {
+  position: relative;
+  display: block;
+  height: var(--icon-size);
+  width: var(--icon-size);
+  border-radius: 50%;
+  margin: 0 4px;
+  cursor: pointer;
+  transition: background-color var(--animation-time) ease;
+}
+
+.radio-input ~ .radio-label {
+  border: 2px solid var(--color-grey-light);
+  transition: border-color var(--animation-time) ease;
+}
+.radio-input:checked ~ .radio-label {
+  border-color: var(--color-primary);
+}
+
+.radio-label:after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: 50%;
+  content: '';
+}
+
+.radio-input ~ label:after {
+  transform: scale(0);
+  transition: transform var(--animation-time-slow) ease;
+}
+
+.radio-input:checked ~ label:after {
+  background-color: var(--color-primary);
+  transform: scale(0.8);
+  transform-origin: center;
+}
+
+.fab {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 8px;
+  display: block;
+}
+.fab:hover {
+  box-shadow: 0px 2px 8px var(--color-grey-dark);
+}
+.fab:before {
+  content: '';
+  background-color: var(--color-white);
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  position: absolute;
+  display: block;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%) rotateZ(90deg);
+}
+.fab:after {
+  content: '';
+  background-color: var(--color-white);
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  position: absolute;
+  display: block;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.generate-button {
+  margin: 8px;
+  width: 325px;
+  font-size: 1.2em;
+}
+
+.remove-color-button {
+  opacity: 0;
+  position: relative;
+  background-color: var(--color-tertiary);
+  transition: opacity var(--animation-time) ease-in-out;
+  width: 25px;
+  height: 25px;
+  margin: -4px 0 0 0;
+}
+.remove-color-button:before {
+  width: 18px;
+  transform: translate(-50%) rotateZ(45deg);
+}
+.remove-color-button:after {
+  width: 18px;
+  transform: translate(-50%) rotateZ(-45deg);
+}
+.color-container:hover > .remove-color-button {
+  opacity: 1;
 }

@@ -2,8 +2,16 @@ import { UI } from 'sketch';
 import BrowserWindow from 'sketch-module-web-view';
 import triangleField from '../main/triangle-field';
 
+// TODO:
+// - clean up resources on webview close
+// - ensure user selection is shape
+
+
 export default function(context) {
-  const options = { identifier: 'unique.id', };
+  const options = {
+    identifier: 'triangle-field-ui',
+    width: 684
+  };
   let browserWindow = new BrowserWindow(options)
   browserWindow.on('closed', () => {
     browserWindow = null;

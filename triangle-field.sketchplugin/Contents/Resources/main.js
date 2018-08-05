@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-var domIds = ['numEdgePoints', 'numFieldPoints', 'points', 'lines', 'triangles', 'generate', 'loader', 'pointRadius', 'pointRadiusContainer', 'lineWidth', 'lineWidthContainer', 'distributionRandom', 'distributionParabolic', 'distributionGrid', 'distributionRadial', 'colorContainer', 'addColor', 'colorDistribution'];
+var domIds = ['numEdgePoints', 'numFieldPoints', 'points', 'lines', 'triangles', 'generate', 'loader', 'pointRadius', 'pointRadiusContainer', 'lineWidth', 'lineWidthContainer', 'distributionRandom', 'distributionParabolic', 'distributionGrid', 'distributionRadial', 'colorContainer', 'addColor', 'colorDistributionDiscrete', 'colorDistributionContinuous'];
 var dom = {};
 var params = {
   numEdgePoints: 20,
@@ -110,6 +110,7 @@ var params = {
 var LOADER_ACTIVE = 'loader-active';
 var SHAPE_PARAM_ACTIVE = 'shape-param-active';
 var TIME_DELAY = 50;
+var HEX_REGEX = /[0-9A-F]{6}$/;
 var colorPickerCount = 0;
 
 function callPlugin(actionName) {
@@ -127,13 +128,11 @@ function callPlugin(actionName) {
 }
 
 function isValidHexColor(hexValue) {
-  if (hexValue.length !== 6) {
+  if (!hexValue || typeof hexValue !== 'string') {
     return false;
   }
 
-  return [parseInt(hexValue.substring(0, 2), 16), parseInt(hexValue.substring(2, 4), 16), parseInt(hexValue.substring(4, 6), 16)].every(function (num) {
-    return num >= 0 && num <= 255;
-  });
+  return HEX_REGEX.test(hexValue.toUpperCase());
 }
 
 function getRandomColorComponent() {
@@ -154,6 +153,7 @@ function addColorPicker(suppressDelete) {
   var label = document.createElement('label');
   var container = document.createElement('div');
   var closeButton = document.createElement('button');
+  var colorRow = document.createElement('div');
   inputElement.addEventListener('change', function (event) {
     var hexString = event.target.value;
     var isValid = isValidHexColor(hexString);
@@ -166,7 +166,7 @@ function addColorPicker(suppressDelete) {
     }
   });
   closeButton.addEventListener('click', function () {
-    return dom.colorContainer.removeChild(container);
+    return dom.colorContainer.removeChild(colorRow);
   });
   preview.classList.add('color-preview');
   preview.style.setProperty('background-color', "#".concat(colorString));
@@ -175,18 +175,20 @@ function addColorPicker(suppressDelete) {
   inputElement.setAttribute('id', id);
   inputElement.classList.add('color-input');
   label.setAttribute('for', id);
-  closeButton.innerText = 'X';
+  closeButton.classList.add('fab');
   closeButton.classList.add('remove-color-button');
   container.classList.add('color-container');
+  colorRow.classList.add('color-row');
   container.appendChild(preview);
   container.appendChild(inputElement);
   container.appendChild(label);
+  colorRow.appendChild(container);
 
   if (!suppressDelete) {
     container.appendChild(closeButton);
   }
 
-  dom.colorContainer.appendChild(container);
+  dom.colorContainer.appendChild(colorRow);
 }
 
 function getAllColors() {
@@ -202,6 +204,14 @@ function handleDistributionChange(event) {
   }
 
   params.distribution = event.target.value;
+}
+
+function handleColorDistributionChange(event) {
+  if (!event.target.checked) {
+    return;
+  }
+
+  params.colorDistribution = event.target.value;
 }
 
 function init() {
@@ -243,9 +253,8 @@ function init() {
   dom.distributionParabolic.addEventListener('change', handleDistributionChange);
   dom.distributionGrid.addEventListener('change', handleDistributionChange);
   dom.distributionRadial.addEventListener('change', handleDistributionChange);
-  dom.colorDistribution.addEventListener('change', function (event) {
-    return params.colorDistribution = event.target.checked ? 'continuous' : 'discrete';
-  });
+  dom.colorDistributionDiscrete.addEventListener('change', handleColorDistributionChange);
+  dom.colorDistributionContinuous.addEventListener('change', handleColorDistributionChange);
   dom.generate.addEventListener('click', function () {
     if (!params.renderPoints && !params.renderLines && !params.renderTriangles) {
       return;

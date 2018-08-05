@@ -12571,10 +12571,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _main_triangle_field__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../main/triangle-field */ "./src/main/triangle-field.js");
 
 
+ // TODO:
+// - clean up resources on webview close
+// - ensure user selection is shape
 
 /* harmony default export */ __webpack_exports__["default"] = (function (context) {
   var options = {
-    identifier: 'unique.id'
+    identifier: 'triangle-field-ui',
+    width: 684
   };
   var browserWindow = new sketch_module_web_view__WEBPACK_IMPORTED_MODULE_1___default.a(options);
   browserWindow.on('closed', function () {

@@ -53,7 +53,7 @@
                 checked
               />
               <label for="distributionRandom" class="radio-label"></label>
-              <span>Random</span>
+              <label for="distributionRandom">Random</label>
             </div>
             <div class="row">
               <input
@@ -64,7 +64,7 @@
                 value="parabolic"
               />
               <label for="distributionParabolic" class="radio-label"></label>
-              <span>Random-Parabolic</span>
+              <label for="distributionParabolic">Random-Parabolic</label>
             </div>
             <div class="row">
               <input
@@ -75,7 +75,7 @@
                 value="grid"
               />
               <label for="distributionGrid" class="radio-label"></label>
-              <span>Grid</span>
+              <label for="distributionGrid">Grid</label>
             </div>
             <div class="row">
               <input
@@ -86,7 +86,7 @@
                 value="radial"
               />
               <label for="distributionRadial" class="radio-label"></label>
-              <span>Radial</span>
+              <label for="distributionRadial">Radial</label>
             </div>
           </div>
         </div>
@@ -105,7 +105,7 @@
                 checked
               />
               <label for="colorDistributionContinuous" class="radio-label"></label>
-              <span>Continuous</span>
+              <label for="colorDistributionContinuous">Continuous</label>
             </div>
             <div class="row">
               <input
@@ -116,7 +116,7 @@
                 value="discrete"
               />
               <label for="colorDistributionDiscrete" class="radio-label"></label>
-              <span>Discrete</span>
+              <label for="colorDistributionDiscrete">Discrete</label>
             </div>
           </div>
         </div>
@@ -140,20 +140,22 @@
                 checked
               />
               <label for="triangles" class="checkbox-label"></label>
-              <span>Triangles</span>
+              <label for="triangles">Triangles</label>
             </div>
-            <div class="row">
-              <input
-                type="checkbox"
-                id="lines"
-                name="renderoption"
-                value="lines"
-                class="checkbox-input input-hidden"
-              />
-              <label for="lines" class="checkbox-label"></label>
-              <span>Lines</span>
+            <div class="row-space-between">
+              <div class="row">
+                <input
+                  type="checkbox"
+                  id="lines"
+                  name="renderoption"
+                  value="lines"
+                  class="checkbox-input input-hidden"
+                />
+                <label for="lines" class="checkbox-label"></label>
+                <label for="lines">Lines</label>
+              </div>
               <div id="lineWidthContainer" class="shape-param">
-                <label for="numEdgePoints" class="sublabel">
+                <label for="lineWidth" class="sublabel">
                   Width:
                 </label>
                 <input
@@ -163,18 +165,20 @@
                 />
               </div>
             </div>
-            <div class="row">
-              <input
-                type="checkbox"
-                id="points"
-                name="renderoption"
-                value="points"
-                class="checkbox-input input-hidden"
-              />
-              <label for="points" class="checkbox-label"></label>
-              <span>Points</span>
+            <div class="row-space-between">
+              <div class="row">
+                <input
+                  type="checkbox"
+                  id="points"
+                  name="renderoption"
+                  value="points"
+                  class="checkbox-input input-hidden"
+                />
+                <label for="points" class="checkbox-label"></label>
+                <label for="points">Points</label>
+              </div>
               <div id="pointRadiusContainer" class="shape-param">
-                <label for="numEdgePoints" class="sublabel">
+                <label for="pointRadius" class="sublabel">
                   Radius:
                 </label>
                 <input
@@ -200,7 +204,14 @@
     </div>
 
     <div id="loader" class="loader">
-      <p>crunching numbers</p>
+      <div>
+        <p>Crunching the Numbers</p>
+        <div class="loader-icon-row">
+          <div class="loader-icon loader-icon-1"></div>
+          <div class="loader-icon loader-icon-2"></div>
+          <div class="loader-icon loader-icon-3"></div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
