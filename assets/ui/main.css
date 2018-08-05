@@ -1,16 +1,19 @@
 html {
   --color-background: #ECECEC;
   --color-font: #515151;
-  --color-primary: #62A9F2;
+  --color-primary: #4892DE;
   --color-primary-light: #C1DDFA;
-  --color-secondary: #CE6664;
+  --color-secondary: #BBCCFF;
+  --color-tertiary: #E97171;
   --color-grey-dark: #333;
+  --color-black: #121212;
   --color-grey: #515151;
   --color-white: #FFF;
   --color-grey-light: #AAA;
-  --color-grey-lighest: #CCC;
+  --color-grey-lightest: #CCC;
   --animation-time: 0.2s;
   --animation-time-slow: 0.3s;
+  --icon-size: 20px;
 }
 
 html, body {
@@ -21,6 +24,7 @@ html, body {
   position: relative;
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   font-size: 18px;
+  font-weight: 200;
   background-color: var(--color-background);
   color: var(--color-font);
 }
@@ -38,13 +42,27 @@ p {
 input {
   background: none;
   background-color: var(--color-white);
-  border: 1px solid var(--color-grey-dark);
-  border-radius: 2px;
+  border: none;
+  border-bottom: 1px solid var(--color-primary);
   padding: 2px;
   margin: 0 8px;
   color: var(--color-font);
-  width: 45px;
+  width: 90px;
   font-size: 18px;
+  outline-style: none;
+  font-weight: 200;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+input:focus {
+  border-bottom: 2px solid var(--color-primary);
+  font-weight: 500;
 }
 
 button {
@@ -55,27 +73,44 @@ button {
   cursor: pointer;
   padding: 8px;
   border-radius: 4px;
-  font-weight: bold;
-  /* font-size: 1em; */
-  color: var(--color-background);
+  color: var(--color-white);
   background-color: var(--color-primary);
+  box-shadow: 0px 1px 4px var(--color-grey-dark);
+  transition: box-shadow var(--animation-time) ease;
+}
+
+.columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .card {
   border: none;
   background-color: var(--color-white);
-  box-shadow: 0px 1px 8px var(--color-grey-dark);
+  box-shadow: 0px 1px 4px var(--color-grey-dark);
   border-radius: 4px;
   margin: 8px;
-  padding: 0;
   width: 325px;
-  min-height: 150px;
+  position: relative;
 }
 
 .card-label {
-  border-bottom: 1px solid red;
-  padding: 4px 0;
-  font-weight: bold;
+  padding: 8px;
+  font-size: 1.2em;
+  color: var(--color-black);
+  background-color: var(--color-secondary);
+}
+
+.card-content {
+  padding: 8px;
 }
 
 .row {
@@ -86,7 +121,6 @@ button {
 
 .loader {
   display: none;
-  /* position: relative; */
 }
 
 .loader-active {
@@ -135,13 +169,18 @@ button {
   align-items: center;
   margin: 4px 0;
 }
-.color-container:hover > .remove-color-button {
-  opacity: 1;
+.color-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
+
 .color-preview {
   width: 30px;
   height: 30px;
   border-radius: 15px;
+  margin: 0 4px;
 }
 .color-input {
   width: 80px;
@@ -149,10 +188,6 @@ button {
 .color-input-invalid {
   border: 2px solid red;
   border-radius: 4px;
-}
-.remove-color-button {
-  opacity: 0;
-  transition: opacity var(--animation-time) ease-in-out;
 }
 
 .checkbox-label {
@@ -179,8 +214,8 @@ button {
   left: 0;
   top: -2px;
   display: block;
-  width: 20px;
-  height: 20px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   border-radius: 50%;
   background-color: var(--color-white);
   content: '';
@@ -201,9 +236,10 @@ button {
 .radio-label {
   position: relative;
   display: block;
-  height: 20px;
-  width: 20px;
+  height: var(--icon-size);
+  width: var(--icon-size);
   border-radius: 50%;
+  margin: 0 4px;
   cursor: pointer;
   transition: background-color var(--animation-time) ease;
 }
@@ -221,8 +257,8 @@ button {
   left: 0;
   top: 0;
   display: block;
-  width: 20px;
-  height: 20px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   border-radius: 50%;
   content: '';
 }
@@ -236,4 +272,69 @@ button {
   background-color: var(--color-primary);
   transform: scale(0.8);
   transform-origin: center;
+}
+
+.fab {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 8px;
+  display: block;
+}
+.fab:hover {
+  box-shadow: 0px 2px 8px var(--color-grey-dark);
+}
+.fab:before {
+  content: '';
+  background-color: var(--color-white);
+  width: 25px;
+  height: 2px;
+  border-radius: 2px;
+  position: absolute;
+  display: block;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%) rotate(90deg);
+}
+.fab:after {
+  content: '';
+  background-color: var(--color-white);
+  width: 25px;
+  height: 2px;
+  border-radius: 2px;
+  position: absolute;
+  display: block;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.generate-button {
+  margin: 8px;
+  width: 325px;
+  font-size: 1.2em;
+}
+
+.remove-color-button {
+  opacity: 0;
+  position: relative;
+  background-color: var(--color-tertiary);
+  transition: opacity var(--animation-time) ease-in-out;
+  width: 25px;
+  height: 25px;
+  margin: -4px 0 0 0;
+}
+.remove-color-button:before {
+  width: 18px;
+  transform: translate(-50%) rotate(45deg);
+}
+.remove-color-button:after {
+  width: 18px;
+  transform: translate(-50%) rotate(-45deg);
+}
+.color-container:hover > .remove-color-button {
+  opacity: 1;
 }

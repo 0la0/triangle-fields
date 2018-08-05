@@ -9,162 +9,196 @@
   </head>
   <body>
 
-    <div class="card">
-      <div class="card-label">Points</div>
-      <div class="row">
-        <label for="numEdgePoints">
-          Number of Edge Points
-        </label>
-        <input
-          type="number"
-          id="numEdgePoints"
-          value="20"
-        />
-      </div>
+    <div class="columns">
+      <div class="column">
+        <!-- POINTS -->
+        <div class="card">
+          <div class="card-label">Number of Points</div>
+          <div class="card-content">
+            <div class="row">
+              <label for="numEdgePoints">
+                Edge Points
+              </label>
+              <input
+                type="number"
+                id="numEdgePoints"
+                value="20"
+              />
+            </div>
 
-      <div class="row">
-        <label for="numFieldPoints">
-          Number of Field Points
-        </label>
-        <input
-          type="number"
-          id="numFieldPoints"
-          value="20"
-        />
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="card">
-        <div class="card-label">Rendering Options</div>
-        <div class="row">
-          <input
-            type="checkbox"
-            id="triangles"
-            name="renderoption"
-            value="triangles"
-            class="checkbox-input input-hidden"
-            checked
-          />
-          <label for="triangles" class="checkbox-label"></label>
-          <span>Triangles</span>
-        </div>
-        <div class="row">
-          <input
-            type="checkbox"
-            id="lines"
-            name="renderoption"
-            value="lines"
-            class="checkbox-input input-hidden"
-          />
-          <label for="lines" class="checkbox-label"></label>
-          <span>Lines</span>
-          <div id="lineWidthContainer" class="shape-param">
-            <label for="numEdgePoints" class="sublabel">
-              Width:
-            </label>
-            <input
-              type="number"
-              id="lineWidth"
-              value="4"
-            />
+            <div class="row">
+              <label for="numFieldPoints">
+                Field Points
+              </label>
+              <input
+                type="number"
+                id="numFieldPoints"
+                value="20"
+              />
+            </div>
           </div>
         </div>
-        <div class="row">
-          <input
-            type="checkbox"
-            id="points"
-            name="renderoption"
-            value="points"
-            class="checkbox-input input-hidden"
-          />
-          <label for="points" class="checkbox-label"></label>
-          <span>Points</span>
-          <div id="pointRadiusContainer" class="shape-param">
-            <label for="numEdgePoints" class="sublabel">
-              Radius:
-            </label>
-            <input
-              type="number"
-              id="pointRadius"
-              value="5"
-            />
+
+        <!-- POINT DISTRIBUTION -->
+        <div class="card">
+          <div class="card-label">Point Distribution</div>
+          <div class="card-content">
+            <div class="row">
+              <input
+                type="radio"
+                id="distributionRandom"
+                name="distribution"
+                class="radio-input input-hidden"
+                value="random"
+                checked
+              />
+              <label for="distributionRandom" class="radio-label"></label>
+              <span>Random</span>
+            </div>
+            <div class="row">
+              <input
+                type="radio"
+                id="distributionParabolic"
+                name="distribution"
+                class="radio-input input-hidden"
+                value="parabolic"
+              />
+              <label for="distributionParabolic" class="radio-label"></label>
+              <span>Random-Parabolic</span>
+            </div>
+            <div class="row">
+              <input
+                type="radio"
+                id="distributionGrid"
+                name="distribution"
+                class="radio-input input-hidden"
+                value="grid"
+              />
+              <label for="distributionGrid" class="radio-label"></label>
+              <span>Grid</span>
+            </div>
+            <div class="row">
+              <input
+                type="radio"
+                id="distributionRadial"
+                name="distribution"
+                class="radio-input input-hidden"
+                value="radial"
+              />
+              <label for="distributionRadial" class="radio-label"></label>
+              <span>Radial</span>
+            </div>
           </div>
         </div>
+
+        <!-- COLOR DISTRIBUTION -->
+        <div class="card">
+          <div class="card-label">Color Distribution</div>
+          <div class="card-content">
+            <div class="row">
+              <input
+                type="radio"
+                id="colorDistributionContinuous"
+                name="colorDistribution"
+                class="radio-input input-hidden"
+                value="continuous"
+                checked
+              />
+              <label for="colorDistributionContinuous" class="radio-label"></label>
+              <span>Continuous</span>
+            </div>
+            <div class="row">
+              <input
+                type="radio"
+                id="colorDistributionDiscrete"
+                name="colorDistribution"
+                class="radio-input input-hidden"
+                value="discrete"
+              />
+              <label for="colorDistributionDiscrete" class="radio-label"></label>
+              <span>Discrete</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="generate-button" id="generate">Generate Triangles</button>
+
       </div>
 
-      <div class="card">
-        <div class="card-label">Point Distribution</div>
-        <div class="row">
-          <input
-            type="radio"
-            id="distributionRandom"
-            name="distribution"
-            class="radio-input input-hidden"
-            value="random"
-            checked
-          />
-          <label for="distributionRandom" class="radio-label"></label>
-          <span>Random</span>
+      <div class="column">
+        <!-- RENDERING OPTIONS -->
+        <div class="card">
+          <div class="card-label">Rendering Options</div>
+          <div class="card-content">
+            <div class="row">
+              <input
+                type="checkbox"
+                id="triangles"
+                name="renderoption"
+                value="triangles"
+                class="checkbox-input input-hidden"
+                checked
+              />
+              <label for="triangles" class="checkbox-label"></label>
+              <span>Triangles</span>
+            </div>
+            <div class="row">
+              <input
+                type="checkbox"
+                id="lines"
+                name="renderoption"
+                value="lines"
+                class="checkbox-input input-hidden"
+              />
+              <label for="lines" class="checkbox-label"></label>
+              <span>Lines</span>
+              <div id="lineWidthContainer" class="shape-param">
+                <label for="numEdgePoints" class="sublabel">
+                  Width:
+                </label>
+                <input
+                  type="number"
+                  id="lineWidth"
+                  value="4"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <input
+                type="checkbox"
+                id="points"
+                name="renderoption"
+                value="points"
+                class="checkbox-input input-hidden"
+              />
+              <label for="points" class="checkbox-label"></label>
+              <span>Points</span>
+              <div id="pointRadiusContainer" class="shape-param">
+                <label for="numEdgePoints" class="sublabel">
+                  Radius:
+                </label>
+                <input
+                  type="number"
+                  id="pointRadius"
+                  value="5"
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="row">
-          <input
-            type="radio"
-            id="distributionParabolic"
-            name="distribution"
-            class="radio-input input-hidden"
-            value="parabolic"
-          />
-          <label for="distributionParabolic" class="radio-label"></label>
-          <span>Parabolic</span>
+
+        <!-- COLORS -->
+        <div class="card">
+          <div class="card-label">Colors</div>
+          <div class="card-content">
+            <div id="colorContainer"></div>
+            <button class="fab" id="addColor"></button>
+          </div>
         </div>
-        <div class="row">
-          <input
-            type="radio"
-            id="distributionGrid"
-            name="distribution"
-            class="radio-input input-hidden"
-            value="grid"
-          />
-          <label for="distributionGrid" class="radio-label"></label>
-          <span>Grid</span>
-        </div>
-        <div class="row">
-          <input
-            type="radio"
-            id="distributionRadial"
-            name="distribution"
-            class="radio-input input-hidden"
-            value="radial"
-          >
-            <label for="distributionRadial" class="radio-label"></label>
-          </input>
-          <span>Radial</span>
-        </div>
+
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-label">Colors</div>
-      <div id="colorContainer"></div>
-      <div class="row">
-        <span>Discrete</span>
-        <div class="row">
-          <input
-            type="checkbox"
-            id="colorDistribution"
-            class="checkbox-input input-hidden"
-            checked
-          />
-          <label for="colorDistribution" class="checkbox-label"></label>
-          <span>Continuous</span>
-        </div>
-        <button id="addColor">Add Color</button>
-      </div>
-
-    </div>
-
-    <button id="generate">Generate</button>
     <div id="loader" class="loader">
       <p>crunching numbers</p>
     </div>

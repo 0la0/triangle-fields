@@ -16,7 +16,8 @@ const domIds = [
   'distributionRadial',
   'colorContainer',
   'addColor',
-  'colorDistribution'
+  'colorDistributionDiscrete',
+  'colorDistributionContinuous'
 ];
 const dom = {};
 const params = {
@@ -73,6 +74,7 @@ function addColorPicker(suppressDelete) {
   const label = document.createElement('label');
   const container = document.createElement('div');
   const closeButton = document.createElement('button');
+  const colorRow = document.createElement('div');
 
   inputElement.addEventListener('change', event => {
     const hexString = event.target.value;
@@ -84,7 +86,7 @@ function addColorPicker(suppressDelete) {
       inputElement.classList.add('color-input-invalid');
     }
   });
-  closeButton.addEventListener('click', () => dom.colorContainer.removeChild(container));
+  closeButton.addEventListener('click', () => dom.colorContainer.removeChild(colorRow));
   preview.classList.add('color-preview');
   preview.style.setProperty('background-color', `#${colorString}`);
   inputElement.setAttribute('type', 'text');
@@ -92,16 +94,18 @@ function addColorPicker(suppressDelete) {
   inputElement.setAttribute('id', id);
   inputElement.classList.add('color-input');
   label.setAttribute('for', id);
-  closeButton.innerText = 'X';
+  closeButton.classList.add('fab');
   closeButton.classList.add('remove-color-button');
   container.classList.add('color-container');
+  colorRow.classList.add('color-row');
   container.appendChild(preview);
   container.appendChild(inputElement);
   container.appendChild(label);
+  colorRow.appendChild(container);
   if (!suppressDelete) {
     container.appendChild(closeButton);
   }
-  dom.colorContainer.appendChild(container);
+  dom.colorContainer.appendChild(colorRow);
 }
 
 function getAllColors() {
@@ -113,6 +117,11 @@ function getAllColors() {
 function handleDistributionChange(event) {
   if (!event.target.checked) { return; }
   params.distribution = event.target.value;
+}
+
+function handleColorDistributionChange(event) {
+  if (!event.target.checked) { return; }
+  params.colorDistribution = event.target.value;
 }
 
 function init() {
@@ -142,8 +151,8 @@ function init() {
   dom.distributionParabolic.addEventListener('change', handleDistributionChange);
   dom.distributionGrid.addEventListener('change', handleDistributionChange);
   dom.distributionRadial.addEventListener('change', handleDistributionChange);
-  dom.colorDistribution.addEventListener('change', event =>
-    params.colorDistribution = event.target.checked ? 'continuous' : 'discrete');
+  dom.colorDistributionDiscrete.addEventListener('change', handleColorDistributionChange);
+  dom.colorDistributionContinuous.addEventListener('change', handleColorDistributionChange);
   dom.generate.addEventListener('click', () => {
     if (!params.renderPoints && !params.renderLines && !params.renderTriangles) { return; }
     const colors = getAllColors();
