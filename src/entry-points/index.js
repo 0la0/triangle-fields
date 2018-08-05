@@ -4,8 +4,6 @@ import triangleField from '../main/triangle-field';
 
 // TODO:
 // - clean up resources on webview close
-// - ensure user selection is shape
-
 
 export default function(context) {
   const options = {
@@ -33,6 +31,12 @@ export default function(context) {
         return;
       }
       const sketchObject = selection.firstObject();
+      const isShape = sketchObject instanceof MSShapeGroup;
+      if (!isShape) {
+        context.document.showMessage('Selecton must be a shape!');
+        closeLoader();
+        return;
+      }
       const start = new Date();
       triangleField(context, sketchObject, params);
       const end = new Date();

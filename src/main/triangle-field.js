@@ -197,7 +197,7 @@ export default function(context, shape, params) {
 
   if (renderTriangles) {
     const triangleLayers = trianglePoints
-      .map(({ p0, p1, p2}) => new Triangle(p0, p1, p2))
+      .map(({ p0, p1, p2}, index) => new Triangle(p0, p1, p2, `Triangle-${index}`))
       .map(triangle => triangle.getShape());
     const triangleGroup = new Group({
       parent: parentGroup,
@@ -223,7 +223,8 @@ export default function(context, shape, params) {
         });
         return uniqueList;
       }, [])
-      .map(line => line.getShape());
+      .map((line, index) => line.getShape());
+      // .map((line, index) => line.getShape().setName(`Line-${index}`));
     const lineGroup = new Group({
       parent: parentGroup,
       name: 'lines',

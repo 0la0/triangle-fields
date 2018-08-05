@@ -12573,7 +12573,6 @@ __webpack_require__.r(__webpack_exports__);
 
  // TODO:
 // - clean up resources on webview close
-// - ensure user selection is shape
 
 /* harmony default export */ __webpack_exports__["default"] = (function (context) {
   var options = {
@@ -12604,6 +12603,14 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var sketchObject = selection.firstObject();
+      var isShape = sketchObject instanceof MSShapeGroup;
+
+      if (!isShape) {
+        context.document.showMessage('Selecton must be a shape!');
+        closeLoader();
+        return;
+      }
+
       var start = new Date();
       Object(_main_triangle_field__WEBPACK_IMPORTED_MODULE_2__["default"])(context, sketchObject, params);
       var end = new Date();
@@ -12674,6 +12681,12 @@ function () {
   }
 
   _createClass(Line, [{
+    key: "setName",
+    value: function setName(name) {
+      this.name = name;
+      return this;
+    }
+  }, {
     key: "getStartPoint",
     value: function getStartPoint() {
       return this.p1;
@@ -12911,13 +12924,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-function createTriangle(p1, p2, p3) {
+function createTriangle(p1, p2, p3, name) {
   var path = NSBezierPath.bezierPath();
   path.moveToPoint(NSMakePoint(p1.getX(), p1.getY()));
   path.lineToPoint(NSMakePoint(p2.getX(), p2.getY()));
   path.lineToPoint(NSMakePoint(p3.getX(), p3.getY()));
   path.closePath();
-  var shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path)); // const border = shape.style().addStylePartOfType(1);
+  var shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path));
+  shape.name = name; // const border = shape.style().addStylePartOfType(1);
   // border.color = MSColor.colorWithRGBADictionary(getRandomColor());
   // border.thickness = 1;
 
@@ -12930,18 +12944,19 @@ function createTriangle(p1, p2, p3) {
 var Triangle =
 /*#__PURE__*/
 function () {
-  function Triangle(p1, p2, p3) {
+  function Triangle(p1, p2, p3, name) {
     _classCallCheck(this, Triangle);
 
     this.p1 = p1;
     this.p2 = p2;
     this.p3 = p3;
+    this.name = name;
   }
 
   _createClass(Triangle, [{
     key: "getShape",
     value: function getShape() {
-      return createTriangle(this.p1, this.p2, this.p3);
+      return createTriangle(this.p1, this.p2, this.p3, this.name);
     }
   }]);
 
@@ -13201,11 +13216,11 @@ function getPointsFromShape(shape, numFieldPoints) {
   });
 
   if (renderTriangles) {
-    var triangleLayers = trianglePoints.map(function (_ref3) {
+    var triangleLayers = trianglePoints.map(function (_ref3, index) {
       var p0 = _ref3.p0,
           p1 = _ref3.p1,
           p2 = _ref3.p2;
-      return new _geometry_Triangle__WEBPACK_IMPORTED_MODULE_7__["default"](p0, p1, p2);
+      return new _geometry_Triangle__WEBPACK_IMPORTED_MODULE_7__["default"](p0, p1, p2, "Triangle-".concat(index));
     }).map(function (triangle) {
       return triangle.getShape();
     });
@@ -13235,9 +13250,10 @@ function getPointsFromShape(shape, numFieldPoints) {
         }
       });
       return uniqueList;
-    }, []).map(function (line) {
+    }, []).map(function (line, index) {
       return line.getShape();
-    });
+    }); // .map((line, index) => line.getShape().setName(`Line-${index}`));
+
     var lineGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
       parent: parentGroup,
       name: 'lines',
@@ -13286,9 +13302,9 @@ function smoothstep(x) {
   return 6 * Math.pow(x, 5) - 15 * Math.pow(x, 4) + 10 * Math.pow(x, 3);
 }
 
-function getValueBetweenTwoPoints(y1, y2) {
+function getValueBetweenTwoPoints(y1, y2, percent) {
   var range = y2 - y1;
-  return y1 + range * smoothstep(Math.random());
+  return y1 + range * percent;
 }
 
 var Color =
@@ -13306,9 +13322,10 @@ function () {
   _createClass(Color, [{
     key: "interpolateWith",
     value: function interpolateWith(color) {
-      var r = getValueBetweenTwoPoints(this.r, color.r);
-      var g = getValueBetweenTwoPoints(this.g, color.g);
-      var b = getValueBetweenTwoPoints(this.b, color.b);
+      var percent = smoothstep(Math.random());
+      var r = getValueBetweenTwoPoints(this.r, color.r, percent);
+      var g = getValueBetweenTwoPoints(this.g, color.g, percent);
+      var b = getValueBetweenTwoPoints(this.b, color.b, percent);
       return new Color(r, g, b);
     }
   }], [{

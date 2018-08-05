@@ -24,6 +24,11 @@ export default class Line {
       .reduce((acc, num) => `${acc}${num}`, '');
   }
 
+  setName(name) {
+    this.name = name;
+    return this;
+  }
+
   getStartPoint() {
     return this.p1;
   }

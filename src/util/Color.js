@@ -3,9 +3,9 @@ function smoothstep(x) {
   return 6 * Math.pow(x, 5) - 15 * Math.pow(x, 4) + 10 * Math.pow(x, 3);
 }
 
-function getValueBetweenTwoPoints(y1, y2) {
+function getValueBetweenTwoPoints(y1, y2, percent) {
   const range = y2 - y1;
-  return y1 + range * smoothstep(Math.random());
+  return y1 + range * percent;
 }
 
 export default class Color {
@@ -17,9 +17,10 @@ export default class Color {
   }
 
   interpolateWith(color) {
-    const r = getValueBetweenTwoPoints(this.r, color.r);
-    const g = getValueBetweenTwoPoints(this.g, color.g);
-    const b = getValueBetweenTwoPoints(this.b, color.b);
+    const percent = smoothstep(Math.random());
+    const r = getValueBetweenTwoPoints(this.r, color.r, percent);
+    const g = getValueBetweenTwoPoints(this.g, color.g, percent);
+    const b = getValueBetweenTwoPoints(this.b, color.b, percent);
     return new Color(r, g, b);
   }
 
