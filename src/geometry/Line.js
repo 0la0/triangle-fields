@@ -1,4 +1,4 @@
-import colorManager from '../util/ColorManager';
+import colorManager from '../main/ColorManager';
 
 function createLine(p1, p2, thickness, name) {
   const path = NSBezierPath.bezierPath();
@@ -13,6 +13,7 @@ function createLine(p1, p2, thickness, name) {
   return shape;
 }
 
+// TODO: clean up unused methods
 export default class Line {
   constructor(p1, p2, thickness, name) {
     this.p1 = p1;

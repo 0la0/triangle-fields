@@ -8,10 +8,6 @@ export function getRandomNum(mult) {
   return mult * Math.random();
 }
 
-export function IntArray(size) {
-  return new Array(size).fill(null).map((n, i) => i);
-}
-
 export function getCentroid(points) {
   if (!points || !points.length) { return new Point(0, 0); }
   const sum = points.reduce((s, p) => s.add(p), new Point(0, 0));

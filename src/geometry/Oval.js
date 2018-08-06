@@ -1,4 +1,4 @@
-import colorManager from '../util/ColorManager';
+import colorManager from '../main/ColorManager';
 
 function createOval(centerPoint, radius, name) {
   const ovalShape = MSOvalShape.alloc().init();

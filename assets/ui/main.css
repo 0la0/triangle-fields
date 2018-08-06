@@ -189,8 +189,6 @@ button {
   transform: rotateZ(28deg);
 }
 
-.loader-icon-2 { animation-delay: 0.2s; }
-.loader-icon-3 { animation-delay: 0.4s; }
 @keyframes loader-icon--animate {
   0% {
     opacity: 0;

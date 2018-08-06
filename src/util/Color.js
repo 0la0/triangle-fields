@@ -1,3 +1,4 @@
+
 // https://en.wikipedia.org/wiki/Smoothstep
 function smoothstep(x) {
   return 6 * Math.pow(x, 5) - 15 * Math.pow(x, 4) + 10 * Math.pow(x, 3);
@@ -26,14 +27,10 @@ export default class Color {
 
   static fromHex(hexValue) {
     try {
-      const r = parseInt(hexValue.substring(0, 2), 16);
-      const g = parseInt(hexValue.substring(2, 4), 16);
-      const b = parseInt(hexValue.substring(4, 6), 16);
-      return new Color(
-        r / 255,
-        g / 255,
-        b / 255
-      );
+      const r = parseInt(hexValue.substring(0, 2), 16) / 255;
+      const g = parseInt(hexValue.substring(2, 4), 16) / 255;
+      const b = parseInt(hexValue.substring(4, 6), 16) / 255;
+      return new Color(r, g, b);
     }
     catch(error) {
       console.log('error', error);

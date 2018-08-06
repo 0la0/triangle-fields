@@ -6,7 +6,7 @@
     {
       "name": "triangle-field",
       "identifier": "triangle-field-identifier",
-      "script": "index.js"
+      "script": "Init.js"
     }
   ],
   "menu": {

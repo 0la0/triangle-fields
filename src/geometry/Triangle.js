@@ -1,4 +1,4 @@
-import colorManager from '../util/ColorManager';
+import colorManager from '../main/ColorManager';
 
 function createTriangle(p1, p2, p3, name) {
   const path = NSBezierPath.bezierPath();
