@@ -2,23 +2,20 @@
   "compatibleVersion": 3,
   "bundleVersion": 1,
   "icon": "icon.png",
+  "description": "Fill a shape with triangles",
   "commands": [
     {
-      "name": "triangle-field",
-      "identifier": "triangle-field-identifier",
+      "name": "triangle-field-TODO-REMOVE",
+      "identifier": "triangle-field-identifier-TODO-REMOVE",
       "script": "Init.js"
     }
   ],
   "menu": {
     "title": "triangle-fields",
     "items": [
-      "triangle-field-identifier"
+      "triangle-field-identifier-TODO-REMOVE"
     ]
   },
-  "resources": [
-    "assets/ui/index.html",
-    "assets/ui/main.js"
-  ],
   "version": "0.1.0",
   "name": "triangle-field",
   "identifier": "triangle-field",

@@ -6,11 +6,11 @@ const UI_WIDTH = 684;
 const UI_PATH = './ui/index.html';
 const GENERATE_FIELD = 'GENERATE_FIELD';
 const CLOSE_LOADER = 'closeLoader()';
+const WEBVIEW_ID = 'triangle-field-ui';
 
-// TODO: update icon
 export default function init(context) {
   const options = {
-    identifier: 'triangle-field-ui',
+    identifier: WEBVIEW_ID,
     width: UI_WIDTH,
     show: false,
   };

@@ -13076,59 +13076,51 @@ __webpack_require__.r(__webpack_exports__);
 var UI_WIDTH = 684;
 var UI_PATH = './ui/index.html';
 var GENERATE_FIELD = 'GENERATE_FIELD';
-var CLOSE_LOADER = 'closeLoader()'; // TODO: update icon
-
+var CLOSE_LOADER = 'closeLoader()';
+var WEBVIEW_ID = 'triangle-field-ui';
 function init(context) {
-  var options = {
-    identifier: 'triangle-field-ui',
-    width: UI_WIDTH,
-    show: false
-  };
-  var browserWindow = new sketch_module_web_view__WEBPACK_IMPORTED_MODULE_1___default.a(options);
-
-  var closeLoader = function closeLoader() {
-    return browserWindow.webContents.executeJavaScript(CLOSE_LOADER);
-  };
-
-  browserWindow.on('closed', function () {
-    browserWindow = null; // TODO: exit plugin and clean up resources
-  });
-  browserWindow.webContents.on(GENERATE_FIELD, function (dto) {
-    var params;
-
-    try {
-      params = JSON.parse(dto);
-    } catch (error) {
-      console.log('ERROR', error);
-      context.document.showMessage('Error, check logs');
-      return;
-    }
-
-    var selection = NSDocumentController.sharedDocumentController().currentDocument().selectedLayers().layers();
-
-    if (selection.count() < 1) {
-      context.document.showMessage('Select a shape!');
-      closeLoader();
-      return;
-    }
-
-    var sketchObject = selection.firstObject();
-    var isShape = sketchObject instanceof MSShapeGroup;
-
-    if (!isShape) {
-      context.document.showMessage('Selecton must be a shape!');
-      closeLoader();
-      return;
-    }
-
-    var page = NSDocumentController.sharedDocumentController().currentDocument().currentPage();
-    Object(_TriangleField__WEBPACK_IMPORTED_MODULE_2__["default"])(page, sketchObject, params);
-    closeLoader();
-  });
-  browserWindow.once('ready-to-show', function () {
-    return browserWindow.show();
-  });
-  browserWindow.loadURL(UI_PATH);
+  console.log("HELLO HELLO HELLO", context); // const options = {
+  //   identifier: WEBVIEW_ID,
+  //   width: UI_WIDTH,
+  //   show: false,
+  // };
+  // let browserWindow = new BrowserWindow(options);
+  // const closeLoader = () => browserWindow.webContents.executeJavaScript(CLOSE_LOADER);
+  //
+  // browserWindow.on('closed', () => {
+  //   browserWindow = null;
+  //   // TODO: exit plugin and clean up resources
+  // });
+  //
+  // browserWindow.webContents.on(GENERATE_FIELD, dto => {
+  //   let params;
+  //   try {
+  //     params = JSON.parse(dto);
+  //   } catch(error) {
+  //     console.log('ERROR', error);
+  //     context.document.showMessage('Error, check logs');
+  //     return;
+  //   }
+  //   const selection = NSDocumentController.sharedDocumentController().currentDocument().selectedLayers().layers();
+  //   if (selection.count() < 1) {
+  //     context.document.showMessage('Select a shape!');
+  //     closeLoader();
+  //     return;
+  //   }
+  //   const sketchObject = selection.firstObject();
+  //   const isShape = sketchObject instanceof MSShapeGroup;
+  //   if (!isShape) {
+  //     context.document.showMessage('Selecton must be a shape!');
+  //     closeLoader();
+  //     return;
+  //   }
+  //   const page = NSDocumentController.sharedDocumentController().currentDocument().currentPage();
+  //   createTriangleField(page, sketchObject, params);
+  //   closeLoader();
+  // });
+  //
+  // browserWindow.once('ready-to-show', () => browserWindow.show());
+  // browserWindow.loadURL(UI_PATH);
 }
 
 /***/ }),
@@ -13151,16 +13143,20 @@ function getPointsFromShape(shape, numFieldPoints) {
   var deltaX = absoluteRect.x() - frame.x();
   var deltaY = absoluteRect.y() - frame.y();
   var path = shape.pathInFrameWithTransforms();
+  var numPoints = path.elementCount();
+  console.log('I AM HERE', numPoints);
   var bezierPath = NSBezierPath.bezierPathWithPath(path);
   var length = Math.floor(bezierPath.length());
   var stride = length / numFieldPoints;
   var indices = new Array(numFieldPoints).fill(null).map(function (n, i) {
     return Math.floor(i * stride);
   }); // TODO: use control points:
-  // console.log(length, bezierPath)
-  // for (let i = 0; i < 20; i++) {
-  //   console.log(bezierPath.pointAtIndex(i));
-  // }
+
+  console.log('---', numPoints);
+
+  for (var i = 0; i < numPoints; i++) {
+    console.log(bezierPath.pointAtIndex(i));
+  }
 
   var points = indices.map(function (index) {
     var _bezierPath$pointOnPa = bezierPath.pointOnPathAtLength(index),

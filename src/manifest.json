@@ -2,6 +2,7 @@
   "compatibleVersion": 3,
   "bundleVersion": 1,
   "icon": "icon.png",
+  "description": "Fill a shape with triangles",
   "commands": [
     {
       "name": "triangle-field",
@@ -14,9 +15,5 @@
     "items": [
       "triangle-field-identifier"
     ]
-  },
-  "resources": [
-    "assets/ui/index.html",
-    "assets/ui/main.js"
-  ]
+  }
 }
