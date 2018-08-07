@@ -20,13 +20,6 @@ export default class Point {
     );
   }
 
-  sub(p) {
-    return new Point(
-      this.x - p.x,
-      this.y - p.y
-    );
-  }
-
   multScalar(scalar) {
     return new Point(
       this.x * scalar,
@@ -41,20 +34,11 @@ export default class Point {
     );
   }
 
-  getMagnitudeSquared() {
-    return this.x * this.x + this.y * this.y;
-  }
-
   toArray() {
     return [ this.x, this.y ];
   }
 
   clone() {
     return new Point(this.x, this.y);
-  }
-
-  equals(p) {
-    if (!(p instanceof Point)) { return false; }
-    return this.x === p.x && this.y === p.y;
   }
 }

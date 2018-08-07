@@ -1,4 +1,3 @@
-import { Types } from 'sketch'; // TODO: needed?
 import { Group } from 'sketch/dom';
 import cdt2d from 'cdt2d';
 import cleanPSLG from 'clean-pslg';
@@ -9,7 +8,7 @@ import Oval from '../geometry/Oval';
 import Line from '../geometry/Line';
 import colorManager from './ColorManager';
 
-export default function createTriangleField(context, shape, params) {
+export default function createTriangleField(page, shape, params) {
   const {
     numEdgePoints,
     numFieldPoints,
@@ -23,7 +22,6 @@ export default function createTriangleField(context, shape, params) {
     colorDistribution,
   } = params;
 
-  const page = context.document.currentPage(); // TODO: pass in page instead of context
   const edgePoints = getPointsFromShape(shape, numEdgePoints);
   const distributionFn = distributionStrategy(distribution);
   const pointField = distributionFn(numFieldPoints, edgePoints);

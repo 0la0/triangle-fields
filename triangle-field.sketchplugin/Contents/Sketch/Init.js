@@ -12618,71 +12618,14 @@ function () {
       return this;
     }
   }, {
-    key: "getStartPoint",
-    value: function getStartPoint() {
-      return this.p1;
-    }
-  }, {
-    key: "getEndPoint",
-    value: function getEndPoint() {
-      return this.p2;
-    }
-  }, {
-    key: "getShape",
-    value: function getShape() {
-      return createLine(this.p1, this.p2, this.thickness, this.name);
-    }
-  }, {
     key: "getId",
     value: function getId() {
       return this.id;
     }
   }, {
-    key: "multScalar",
-    value: function multScalar(scalar) {
-      this.p1.multScalar(scalar);
-      this.p2.multScalar(scalar);
-      return this;
-    }
-  }, {
-    key: "getPointOnLineFromStart",
-    value: function getPointOnLineFromStart(distance) {
-      var p1 = this.p1.clone();
-      var p2 = this.p2.clone().sub(p1);
-      var length = Math.sqrt(p2.getMagnitudeSquared());
-      return p2.multScalar(1 / length).multScalar(distance).add(p1);
-    }
-  }, {
-    key: "getPointOnLineFromEnd",
-    value: function getPointOnLineFromEnd(distance) {
-      var p2 = this.p2.clone();
-      var p1 = this.p1.clone().sub(p2);
-      var length = Math.sqrt(p1.getMagnitudeSquared());
-      return p1.multScalar(1 / length).multScalar(distance).add(p2);
-    }
-  }, {
-    key: "reverseClone",
-    value: function reverseClone() {
-      return new Line(this.p2.clone(), this.p1.clone());
-    }
-  }, {
-    key: "clone",
-    value: function clone() {
-      return new Line(this.p1.clone(), this.p2.clone());
-    }
-  }, {
-    key: "equals",
-    value: function equals(line) {
-      if (!(line instanceof Line)) {
-        return false;
-      }
-
-      return this.p1.equals(line.p1) && this.p2.equals(line.p2) || this.p1.equals(line.p2) && this.p2.equals(line.p1);
-    }
-  }, {
-    key: "equalsPoints",
-    value: function equalsPoints(p1, p2) {
-      return this.p1.equals(p1) && this.p2.equals(p2) || this.p1.equals(p2) && this.p2.equals(p1);
+    key: "getShape",
+    value: function getShape() {
+      return createLine(this.p1, this.p2, this.thickness, this.name);
     }
   }]);
 
@@ -12789,11 +12732,6 @@ function () {
       return new Point(this.x + p.x, this.y + p.y);
     }
   }, {
-    key: "sub",
-    value: function sub(p) {
-      return new Point(this.x - p.x, this.y - p.y);
-    }
-  }, {
     key: "multScalar",
     value: function multScalar(scalar) {
       return new Point(this.x * scalar, this.y * scalar);
@@ -12804,11 +12742,6 @@ function () {
       return new Point(this.x + scalar, this.y + scalar);
     }
   }, {
-    key: "getMagnitudeSquared",
-    value: function getMagnitudeSquared() {
-      return this.x * this.x + this.y * this.y;
-    }
-  }, {
     key: "toArray",
     value: function toArray() {
       return [this.x, this.y];
@@ -12817,15 +12750,6 @@ function () {
     key: "clone",
     value: function clone() {
       return new Point(this.x, this.y);
-    }
-  }, {
-    key: "equals",
-    value: function equals(p) {
-      if (!(p instanceof Point)) {
-        return false;
-      }
-
-      return this.x === p.x && this.y === p.y;
     }
   }]);
 
@@ -13152,7 +13076,8 @@ __webpack_require__.r(__webpack_exports__);
 var UI_WIDTH = 684;
 var UI_PATH = './ui/index.html';
 var GENERATE_FIELD = 'GENERATE_FIELD';
-var CLOSE_LOADER = 'closeLoader()';
+var CLOSE_LOADER = 'closeLoader()'; // TODO: update icon
+
 function init(context) {
   var options = {
     identifier: 'triangle-field-ui',
@@ -13196,7 +13121,8 @@ function init(context) {
       return;
     }
 
-    Object(_TriangleField__WEBPACK_IMPORTED_MODULE_2__["default"])(context, sketchObject, params);
+    var page = NSDocumentController.sharedDocumentController().currentDocument().currentPage();
+    Object(_TriangleField__WEBPACK_IMPORTED_MODULE_2__["default"])(page, sketchObject, params);
     closeLoader();
   });
   browserWindow.once('ready-to-show', function () {
@@ -13258,20 +13184,18 @@ function getPointsFromShape(shape, numFieldPoints) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return createTriangleField; });
-/* harmony import */ var sketch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sketch */ "sketch");
-/* harmony import */ var sketch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sketch__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var sketch_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! sketch/dom */ "sketch/dom");
-/* harmony import */ var sketch_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(sketch_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var cdt2d__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! cdt2d */ "./node_modules/cdt2d/cdt2d.js");
-/* harmony import */ var cdt2d__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(cdt2d__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var clean_pslg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! clean-pslg */ "./node_modules/clean-pslg/clean-pslg.js");
-/* harmony import */ var clean_pslg__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(clean_pslg__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _FieldGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FieldGenerator */ "./src/main/FieldGenerator.js");
-/* harmony import */ var _ShapeExtractor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ShapeExtractor */ "./src/main/ShapeExtractor.js");
-/* harmony import */ var _geometry_Triangle__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../geometry/Triangle */ "./src/geometry/Triangle.js");
-/* harmony import */ var _geometry_Oval__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../geometry/Oval */ "./src/geometry/Oval.js");
-/* harmony import */ var _geometry_Line__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../geometry/Line */ "./src/geometry/Line.js");
-/* harmony import */ var _ColorManager__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./ColorManager */ "./src/main/ColorManager.js");
+/* harmony import */ var sketch_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sketch/dom */ "sketch/dom");
+/* harmony import */ var sketch_dom__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sketch_dom__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var cdt2d__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! cdt2d */ "./node_modules/cdt2d/cdt2d.js");
+/* harmony import */ var cdt2d__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(cdt2d__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var clean_pslg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! clean-pslg */ "./node_modules/clean-pslg/clean-pslg.js");
+/* harmony import */ var clean_pslg__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(clean_pslg__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _FieldGenerator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FieldGenerator */ "./src/main/FieldGenerator.js");
+/* harmony import */ var _ShapeExtractor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ShapeExtractor */ "./src/main/ShapeExtractor.js");
+/* harmony import */ var _geometry_Triangle__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../geometry/Triangle */ "./src/geometry/Triangle.js");
+/* harmony import */ var _geometry_Oval__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../geometry/Oval */ "./src/geometry/Oval.js");
+/* harmony import */ var _geometry_Line__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../geometry/Line */ "./src/geometry/Line.js");
+/* harmony import */ var _ColorManager__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./ColorManager */ "./src/main/ColorManager.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -13280,7 +13204,6 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
- // TODO: needed?
 
 
 
@@ -13290,8 +13213,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-
-function createTriangleField(context, shape, params) {
+function createTriangleField(page, shape, params) {
   var numEdgePoints = params.numEdgePoints,
       numFieldPoints = params.numFieldPoints,
       renderPoints = params.renderPoints,
@@ -13302,10 +13224,8 @@ function createTriangleField(context, shape, params) {
       pointRadius = params.pointRadius,
       colors = params.colors,
       colorDistribution = params.colorDistribution;
-  var page = context.document.currentPage(); // TODO: pass in page instead of context
-
-  var edgePoints = Object(_ShapeExtractor__WEBPACK_IMPORTED_MODULE_5__["default"])(shape, numEdgePoints);
-  var distributionFn = Object(_FieldGenerator__WEBPACK_IMPORTED_MODULE_4__["default"])(distribution);
+  var edgePoints = Object(_ShapeExtractor__WEBPACK_IMPORTED_MODULE_4__["default"])(shape, numEdgePoints);
+  var distributionFn = Object(_FieldGenerator__WEBPACK_IMPORTED_MODULE_3__["default"])(distribution);
   var pointField = distributionFn(numFieldPoints, edgePoints);
   var allPoints = edgePoints.concat(pointField.points);
   var pointArray = allPoints.map(function (point) {
@@ -13314,8 +13234,8 @@ function createTriangleField(context, shape, params) {
   var edgeIndices = edgePoints.map(function (point, index, arr) {
     return [index, (index + 1) % arr.length];
   });
-  clean_pslg__WEBPACK_IMPORTED_MODULE_3___default()(pointArray, edgeIndices);
-  var triangleIndices = cdt2d__WEBPACK_IMPORTED_MODULE_2___default()(pointArray, edgeIndices, {
+  clean_pslg__WEBPACK_IMPORTED_MODULE_2___default()(pointArray, edgeIndices);
+  var triangleIndices = cdt2d__WEBPACK_IMPORTED_MODULE_1___default()(pointArray, edgeIndices, {
     exterior: false
   });
   var trianglePoints = triangleIndices.map(function (_ref) {
@@ -13330,23 +13250,23 @@ function createTriangleField(context, shape, params) {
       p2: allPoints[i2]
     };
   });
-  var parentGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
+  var parentGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_0__["Group"]({
     parent: page,
     name: 'triangle field'
   });
-  _ColorManager__WEBPACK_IMPORTED_MODULE_9__["default"].setFromHexList(colors);
-  _ColorManager__WEBPACK_IMPORTED_MODULE_9__["default"].setGenerationMethod(colorDistribution);
+  _ColorManager__WEBPACK_IMPORTED_MODULE_8__["default"].setFromHexList(colors);
+  _ColorManager__WEBPACK_IMPORTED_MODULE_8__["default"].setGenerationMethod(colorDistribution);
 
   if (renderTriangles) {
     var triangleLayers = trianglePoints.map(function (_ref3, index) {
       var p0 = _ref3.p0,
           p1 = _ref3.p1,
           p2 = _ref3.p2;
-      return new _geometry_Triangle__WEBPACK_IMPORTED_MODULE_6__["default"](p0, p1, p2, "Triangle-".concat(index));
+      return new _geometry_Triangle__WEBPACK_IMPORTED_MODULE_5__["default"](p0, p1, p2, "Triangle-".concat(index));
     }).map(function (triangle) {
       return triangle.getShape();
     });
-    var triangleGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
+    var triangleGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_0__["Group"]({
       parent: parentGroup,
       name: 'triangles',
       layers: triangleLayers
@@ -13359,9 +13279,9 @@ function createTriangleField(context, shape, params) {
       var p0 = _ref4.p0,
           p1 = _ref4.p1,
           p2 = _ref4.p2;
-      var line0 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_8__["default"](p0, p1, lineWidth, '');
-      var line1 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_8__["default"](p1, p2, lineWidth, '');
-      var line2 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_8__["default"](p2, p0, lineWidth, '');
+      var line0 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_7__["default"](p0, p1, lineWidth, '');
+      var line1 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_7__["default"](p1, p2, lineWidth, '');
+      var line2 = new _geometry_Line__WEBPACK_IMPORTED_MODULE_7__["default"](p2, p0, lineWidth, '');
       return [line0, line1, line2];
     }).reduce(function (uniqueList, triangleLines) {
       triangleLines.forEach(function (line) {
@@ -13375,7 +13295,7 @@ function createTriangleField(context, shape, params) {
     }, []).map(function (line, index) {
       return line.setName("Line-".concat(index)).getShape();
     });
-    var lineGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
+    var lineGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_0__["Group"]({
       parent: parentGroup,
       name: 'lines',
       layers: lineLayers
@@ -13385,11 +13305,11 @@ function createTriangleField(context, shape, params) {
 
   if (renderPoints) {
     var pointLayers = allPoints.map(function (p, index) {
-      return new _geometry_Oval__WEBPACK_IMPORTED_MODULE_7__["default"](p, pointRadius, "Point-".concat(index));
+      return new _geometry_Oval__WEBPACK_IMPORTED_MODULE_6__["default"](p, pointRadius, "Point-".concat(index));
     }).map(function (oval) {
       return oval.getShape();
     });
-    var pointGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_1__["Group"]({
+    var pointGroup = new sketch_dom__WEBPACK_IMPORTED_MODULE_0__["Group"]({
       parent: parentGroup,
       name: 'points',
       layers: pointLayers
@@ -13453,10 +13373,10 @@ function () {
     key: "fromHex",
     value: function fromHex(hexValue) {
       try {
-        var r = parseInt(hexValue.substring(0, 2), 16);
-        var g = parseInt(hexValue.substring(2, 4), 16);
-        var b = parseInt(hexValue.substring(4, 6), 16);
-        return new Color(r / 255, g / 255, b / 255);
+        var r = parseInt(hexValue.substring(0, 2), 16) / 255;
+        var g = parseInt(hexValue.substring(2, 4), 16) / 255;
+        var b = parseInt(hexValue.substring(4, 6), 16) / 255;
+        return new Color(r, g, b);
       } catch (error) {
         console.log('error', error);
         return new Color(1, 0, 0);

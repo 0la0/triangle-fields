@@ -7,6 +7,7 @@ const UI_PATH = './ui/index.html';
 const GENERATE_FIELD = 'GENERATE_FIELD';
 const CLOSE_LOADER = 'closeLoader()';
 
+// TODO: update icon
 export default function init(context) {
   const options = {
     identifier: 'triangle-field-ui',
@@ -43,7 +44,8 @@ export default function init(context) {
       closeLoader();
       return;
     }
-    createTriangleField(context, sketchObject, params);
+    const page = NSDocumentController.sharedDocumentController().currentDocument().currentPage();
+    createTriangleField(page, sketchObject, params);
     closeLoader();
   });
 
