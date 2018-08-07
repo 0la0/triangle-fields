@@ -1,5 +1,6 @@
 import Point from '../geometry/Point';
 
+// TODO: figure out how to sequence all "pointAtIndex" into this
 export default function getPointsFromShape(shape, numFieldPoints) {
   const absoluteRect = shape.absoluteRect();
   const frame = shape.frame();
@@ -10,17 +11,10 @@ export default function getPointsFromShape(shape, numFieldPoints) {
   const bezierPath = NSBezierPath.bezierPathWithPath(path);
   const length = Math.floor(bezierPath.length());
   const stride = length / numFieldPoints;
-  const indices = new Array(numFieldPoints).fill(null).map((n, i) => Math.floor(i * stride));
-
-  const pathPoints = new Array(numPoints).fill(null).map((n, index) => {
-    const { x, y } = bezierPath.pointAtIndex(index);
-    return new Point(deltaX + x, deltaY + y);
-  });
-  // TODO: sort original path points into generated points
-
-  const generatedPoints = indices.map(index => {
-    const { x, y } = bezierPath.pointOnPathAtLength(index);
-    return new Point(deltaX + x, deltaY + y);
-  });
-  return generatedPoints;
+  return new Array(numFieldPoints).fill(null)
+    .map((n, i) => {
+      const length = Math.floor(i * stride);
+      const { x, y } = bezierPath.pointOnPathAtLength(length);
+      return new Point(deltaX + x, deltaY + y);
+    });
 }

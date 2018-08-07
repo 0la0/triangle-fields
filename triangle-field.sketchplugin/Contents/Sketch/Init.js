@@ -13144,6 +13144,7 @@ function init(context) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return getPointsFromShape; });
 /* harmony import */ var _geometry_Point__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../geometry/Point */ "./src/geometry/Point.js");
+ // TODO: figure out how to sequence all "pointAtIndex" into this
 
 function getPointsFromShape(shape, numFieldPoints) {
   var absoluteRect = shape.absoluteRect();
@@ -13155,25 +13156,15 @@ function getPointsFromShape(shape, numFieldPoints) {
   var bezierPath = NSBezierPath.bezierPathWithPath(path);
   var length = Math.floor(bezierPath.length());
   var stride = length / numFieldPoints;
-  var indices = new Array(numFieldPoints).fill(null).map(function (n, i) {
-    return Math.floor(i * stride);
-  });
-  var pathPoints = new Array(numPoints).fill(null).map(function (n, index) {
-    var _bezierPath$pointAtIn = bezierPath.pointAtIndex(index),
-        x = _bezierPath$pointAtIn.x,
-        y = _bezierPath$pointAtIn.y;
+  return new Array(numFieldPoints).fill(null).map(function (n, i) {
+    var length = Math.floor(i * stride);
 
-    return new _geometry_Point__WEBPACK_IMPORTED_MODULE_0__["default"](deltaX + x, deltaY + y);
-  }); // TODO: sort original path points into generated points
-
-  var generatedPoints = indices.map(function (index) {
-    var _bezierPath$pointOnPa = bezierPath.pointOnPathAtLength(index),
+    var _bezierPath$pointOnPa = bezierPath.pointOnPathAtLength(length),
         x = _bezierPath$pointOnPa.x,
         y = _bezierPath$pointOnPa.y;
 
     return new _geometry_Point__WEBPACK_IMPORTED_MODULE_0__["default"](deltaX + x, deltaY + y);
   });
-  return generatedPoints;
 }
 
 /***/ }),
