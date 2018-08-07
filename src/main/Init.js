@@ -17,11 +17,6 @@ export default function init(context) {
   let browserWindow = new BrowserWindow(options);
   const closeLoader = () => browserWindow.webContents.executeJavaScript(CLOSE_LOADER);
 
-  browserWindow.on('closed', () => {
-    browserWindow = null;
-    // TODO: exit plugin and clean up resources
-  });
-
   browserWindow.webContents.on(GENERATE_FIELD, dto => {
     let params;
     try {
@@ -49,6 +44,7 @@ export default function init(context) {
     closeLoader();
   });
 
+  browserWindow.on('closed', () => browserWindow = null);
   browserWindow.once('ready-to-show', () => browserWindow.show());
   browserWindow.loadURL(UI_PATH);
 }

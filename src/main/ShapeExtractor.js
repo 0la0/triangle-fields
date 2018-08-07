@@ -12,15 +12,15 @@ export default function getPointsFromShape(shape, numFieldPoints) {
   const stride = length / numFieldPoints;
   const indices = new Array(numFieldPoints).fill(null).map((n, i) => Math.floor(i * stride));
 
-  // TODO: use control points:
-  console.log('---', numPoints)
-  for (let i = 0; i < numPoints; i++) {
-    console.log(bezierPath.pointAtIndex(i));
-  }
+  const pathPoints = new Array(numPoints).fill(null).map((n, index) => {
+    const { x, y } = bezierPath.pointAtIndex(index);
+    return new Point(deltaX + x, deltaY + y);
+  });
+  // TODO: sort original path points into generated points
 
-  const points = indices.map(index => {
+  const generatedPoints = indices.map(index => {
     const { x, y } = bezierPath.pointOnPathAtLength(index);
     return new Point(deltaX + x, deltaY + y);
   });
-  return points;
+  return generatedPoints;
 }

@@ -13079,48 +13079,56 @@ var GENERATE_FIELD = 'GENERATE_FIELD';
 var CLOSE_LOADER = 'closeLoader()';
 var WEBVIEW_ID = 'triangle-field-ui';
 function init(context) {
-  console.log("HELLO HELLO HELLO", context); // const options = {
-  //   identifier: WEBVIEW_ID,
-  //   width: UI_WIDTH,
-  //   show: false,
-  // };
-  // let browserWindow = new BrowserWindow(options);
-  // const closeLoader = () => browserWindow.webContents.executeJavaScript(CLOSE_LOADER);
-  //
-  // browserWindow.on('closed', () => {
-  //   browserWindow = null;
-  //   // TODO: exit plugin and clean up resources
-  // });
-  //
-  // browserWindow.webContents.on(GENERATE_FIELD, dto => {
-  //   let params;
-  //   try {
-  //     params = JSON.parse(dto);
-  //   } catch(error) {
-  //     console.log('ERROR', error);
-  //     context.document.showMessage('Error, check logs');
-  //     return;
-  //   }
-  //   const selection = NSDocumentController.sharedDocumentController().currentDocument().selectedLayers().layers();
-  //   if (selection.count() < 1) {
-  //     context.document.showMessage('Select a shape!');
-  //     closeLoader();
-  //     return;
-  //   }
-  //   const sketchObject = selection.firstObject();
-  //   const isShape = sketchObject instanceof MSShapeGroup;
-  //   if (!isShape) {
-  //     context.document.showMessage('Selecton must be a shape!');
-  //     closeLoader();
-  //     return;
-  //   }
-  //   const page = NSDocumentController.sharedDocumentController().currentDocument().currentPage();
-  //   createTriangleField(page, sketchObject, params);
-  //   closeLoader();
-  // });
-  //
-  // browserWindow.once('ready-to-show', () => browserWindow.show());
-  // browserWindow.loadURL(UI_PATH);
+  var options = {
+    identifier: WEBVIEW_ID,
+    width: UI_WIDTH,
+    show: false
+  };
+  var browserWindow = new sketch_module_web_view__WEBPACK_IMPORTED_MODULE_1___default.a(options);
+
+  var closeLoader = function closeLoader() {
+    return browserWindow.webContents.executeJavaScript(CLOSE_LOADER);
+  };
+
+  browserWindow.webContents.on(GENERATE_FIELD, function (dto) {
+    var params;
+
+    try {
+      params = JSON.parse(dto);
+    } catch (error) {
+      console.log('ERROR', error);
+      context.document.showMessage('Error, check logs');
+      return;
+    }
+
+    var selection = NSDocumentController.sharedDocumentController().currentDocument().selectedLayers().layers();
+
+    if (selection.count() < 1) {
+      context.document.showMessage('Select a shape!');
+      closeLoader();
+      return;
+    }
+
+    var sketchObject = selection.firstObject();
+    var isShape = sketchObject instanceof MSShapeGroup;
+
+    if (!isShape) {
+      context.document.showMessage('Selecton must be a shape!');
+      closeLoader();
+      return;
+    }
+
+    var page = NSDocumentController.sharedDocumentController().currentDocument().currentPage();
+    Object(_TriangleField__WEBPACK_IMPORTED_MODULE_2__["default"])(page, sketchObject, params);
+    closeLoader();
+  });
+  browserWindow.on('closed', function () {
+    return browserWindow = null;
+  });
+  browserWindow.once('ready-to-show', function () {
+    return browserWindow.show();
+  });
+  browserWindow.loadURL(UI_PATH);
 }
 
 /***/ }),
@@ -13144,28 +13152,28 @@ function getPointsFromShape(shape, numFieldPoints) {
   var deltaY = absoluteRect.y() - frame.y();
   var path = shape.pathInFrameWithTransforms();
   var numPoints = path.elementCount();
-  console.log('I AM HERE', numPoints);
   var bezierPath = NSBezierPath.bezierPathWithPath(path);
   var length = Math.floor(bezierPath.length());
   var stride = length / numFieldPoints;
   var indices = new Array(numFieldPoints).fill(null).map(function (n, i) {
     return Math.floor(i * stride);
-  }); // TODO: use control points:
+  });
+  var pathPoints = new Array(numPoints).fill(null).map(function (n, index) {
+    var _bezierPath$pointAtIn = bezierPath.pointAtIndex(index),
+        x = _bezierPath$pointAtIn.x,
+        y = _bezierPath$pointAtIn.y;
 
-  console.log('---', numPoints);
+    return new _geometry_Point__WEBPACK_IMPORTED_MODULE_0__["default"](deltaX + x, deltaY + y);
+  }); // TODO: sort original path points into generated points
 
-  for (var i = 0; i < numPoints; i++) {
-    console.log(bezierPath.pointAtIndex(i));
-  }
-
-  var points = indices.map(function (index) {
+  var generatedPoints = indices.map(function (index) {
     var _bezierPath$pointOnPa = bezierPath.pointOnPathAtLength(index),
         x = _bezierPath$pointOnPa.x,
         y = _bezierPath$pointOnPa.y;
 
     return new _geometry_Point__WEBPACK_IMPORTED_MODULE_0__["default"](deltaX + x, deltaY + y);
   });
-  return points;
+  return generatedPoints;
 }
 
 /***/ }),

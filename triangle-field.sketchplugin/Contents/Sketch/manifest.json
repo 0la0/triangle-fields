@@ -5,15 +5,15 @@
   "description": "Fill a shape with triangles",
   "commands": [
     {
-      "name": "triangle-field-TODO-REMOVE",
-      "identifier": "triangle-field-identifier-TODO-REMOVE",
+      "name": "triangle-field",
+      "identifier": "triangle-field-identifier",
       "script": "Init.js"
     }
   ],
   "menu": {
     "title": "triangle-fields",
     "items": [
-      "triangle-field-identifier-TODO-REMOVE"
+      "triangle-field-identifier"
     ]
   },
   "version": "0.1.0",
