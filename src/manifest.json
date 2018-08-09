@@ -2,18 +2,16 @@
   "compatibleVersion": 3,
   "bundleVersion": 1,
   "icon": "icon.png",
-  "description": "Fill a shape with triangles",
+  "description": "Generate triangle tessellations inside a shape.",
   "commands": [
     {
-      "name": "triangle-field",
-      "identifier": "triangle-field-identifier",
+      "name": "triangle-fields",
+      "identifier": "triangle-fields-identifier",
       "script": "./main/Init.js"
     }
   ],
   "menu": {
     "title": "triangle-fields",
-    "items": [
-      "triangle-field-identifier"
-    ]
+    "items": [ "triangle-fields-identifier" ]
   }
 }
