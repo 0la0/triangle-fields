@@ -2,7 +2,7 @@
   "compatibleVersion": 3,
   "bundleVersion": 1,
   "icon": "icon.png",
-  "description": "Generate triangle tessellations inside a shape.",
+  "description": "Generate Delaunay triangle tessellation inside a shape.",
   "commands": [
     {
       "name": "triangle-fields",

@@ -30,5 +30,7 @@
     "cdt2d": "^1.0.0",
     "clean-pslg": "^1.1.2",
     "sketch-module-web-view": "^1.2.3"
-  }
+  },
+  "repository": "https://github.com/0la0/triangle-fields",
+  "description": "Generate Delaunay triangle tessellation inside a shape."
 }
