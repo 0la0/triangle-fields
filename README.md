@@ -5,7 +5,7 @@ A sketch plugin for generating a [Delaunay Tessellation](https://en.wikipedia.or
 
 ## Installation
 - [Download the plugin repository](https://github.com/0la0/triangle-fields/archive/master.zip)
-- Unzip the repo, and double-click the triangle-fields.sketchplugin file
+- Unzip the repo, and double-click the `triangle-fields.sketchplugin` file
 - Set your parameters, select a shape, click 'Generate', and off you go!
 
 ![UI](documentation-assets/documentation-ui.png)
