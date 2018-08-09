@@ -1,12 +1,14 @@
 # Triangle Fields
-A sketch plugin for generating tessellations with [Delaunay Triangulation](https://en.wikipedia.org/wiki/Delaunay_triangulation).
+A sketch plugin for generating a [Delaunay Tessellation](https://en.wikipedia.org/wiki/Delaunay_triangulation) from a selected shape.
 
-![UI](documentation-assets/documentation-ui.png)
+![UI](documentation-assets/documentation-animation.gif)
 
 ## Installation
 - [Download the plugin repository](https://github.com/0la0/triangle-fields/archive/master.zip)
 - Unzip the repo, and double-click the triangle-fields.sketchplugin file
 - Set your parameters, select a shape, click 'Generate', and off you go!
+
+![UI](documentation-assets/documentation-ui.png)
 
 ## Generation Options
 
