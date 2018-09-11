@@ -35,7 +35,7 @@ export default function init(context) {
     const sketchObject = selection.firstObject();
     const isShape = sketchObject instanceof MSShapeGroup;
     if (!isShape) {
-      context.document.showMessage('Selecton must be a shape!');
+      context.document.showMessage('Selection must be a shape!');
       closeLoader();
       return;
     }
