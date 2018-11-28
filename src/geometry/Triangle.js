@@ -6,7 +6,7 @@ function createTriangle(p1, p2, p3, name) {
   path.lineToPoint(NSMakePoint(p2.getX(), p2.getY()));
   path.lineToPoint(NSMakePoint(p3.getX(), p3.getY()));
   path.closePath();
-  const shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path));
+  const shape = MSShapeGroup.layerWithPath(MSPath.pathWithBezierPath(path));
   shape.name = name;
   // const border = shape.style().addStylePartOfType(1);
   // border.color = MSColor.colorWithRGBADictionary(getRandomColor());

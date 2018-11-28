@@ -12586,7 +12586,7 @@ function createLine(p1, p2, thickness, name) {
   var path = NSBezierPath.bezierPath();
   path.moveToPoint(NSMakePoint(p1.getX(), p1.getY()));
   path.lineToPoint(NSMakePoint(p2.getX(), p2.getY()));
-  var shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path));
+  var shape = MSShapeGroup.layerWithPath(MSPath.pathWithBezierPath(path));
   var border = shape.style().addStylePartOfType(1);
   border.color = MSColor.colorWithRGBADictionary(_main_ColorManager__WEBPACK_IMPORTED_MODULE_0__["default"].getRandomColor());
   border.thickness = thickness;
@@ -12785,7 +12785,7 @@ function createTriangle(p1, p2, p3, name) {
   path.lineToPoint(NSMakePoint(p2.getX(), p2.getY()));
   path.lineToPoint(NSMakePoint(p3.getX(), p3.getY()));
   path.closePath();
-  var shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path));
+  var shape = MSShapeGroup.layerWithPath(MSPath.pathWithBezierPath(path));
   shape.name = name; // const border = shape.style().addStylePartOfType(1);
   // border.color = MSColor.colorWithRGBADictionary(getRandomColor());
   // border.thickness = 1;
@@ -13110,14 +13110,6 @@ function init(context) {
     }
 
     var sketchObject = selection.firstObject();
-    var isShape = sketchObject instanceof MSShapeGroup;
-
-    if (!isShape) {
-      context.document.showMessage('Selecton must be a shape!');
-      closeLoader();
-      return;
-    }
-
     var page = NSDocumentController.sharedDocumentController().currentDocument().currentPage();
     Object(_TriangleField__WEBPACK_IMPORTED_MODULE_2__["default"])(page, sketchObject, params);
     closeLoader();

@@ -129,14 +129,15 @@ function init() {
   domIds.forEach(key => dom[key] = document.getElementById(key));
   dom.numEdgePoints.addEventListener('change', event => params.numEdgePoints = parseInt(event.target.value, 10));
   dom.numFieldPoints.addEventListener('change', event => params.numFieldPoints = parseInt(event.target.value, 10));
-  dom.points.addEventListener('change', event => {
-    const val = event.target.checked;
-    params.renderPoints = val;
-    val ?
-      dom.pointRadiusContainer.classList.add(SHAPE_PARAM_ACTIVE) :
-      dom.pointRadiusContainer.classList.remove(SHAPE_PARAM_ACTIVE);
-  });
-  dom.pointRadius.addEventListener('change', event => params.pointRadius = parseInt(event.target.value, 10));
+  // TODO: reimplement when we know about ovals in Sketch 52
+  // dom.points.addEventListener('change', event => {
+  //   const val = event.target.checked;
+  //   params.renderPoints = val;
+  //   val ?
+  //     dom.pointRadiusContainer.classList.add(SHAPE_PARAM_ACTIVE) :
+  //     dom.pointRadiusContainer.classList.remove(SHAPE_PARAM_ACTIVE);
+  // });
+  // dom.pointRadius.addEventListener('change', event => params.pointRadius = parseInt(event.target.value, 10));
   dom.lines.addEventListener('change', event => {
     const val = event.target.checked;
     params.renderLines = val;

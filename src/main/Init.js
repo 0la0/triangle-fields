@@ -33,12 +33,6 @@ export default function init(context) {
       return;
     }
     const sketchObject = selection.firstObject();
-    const isShape = sketchObject instanceof MSShapeGroup;
-    if (!isShape) {
-      context.document.showMessage('Selecton must be a shape!');
-      closeLoader();
-      return;
-    }
     const page = NSDocumentController.sharedDocumentController().currentDocument().currentPage();
     createTriangleField(page, sketchObject, params);
     closeLoader();

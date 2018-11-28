@@ -229,15 +229,16 @@ function init() {
   });
   dom.numFieldPoints.addEventListener('change', function (event) {
     return params.numFieldPoints = parseInt(event.target.value, 10);
-  });
-  dom.points.addEventListener('change', function (event) {
-    var val = event.target.checked;
-    params.renderPoints = val;
-    val ? dom.pointRadiusContainer.classList.add(SHAPE_PARAM_ACTIVE) : dom.pointRadiusContainer.classList.remove(SHAPE_PARAM_ACTIVE);
-  });
-  dom.pointRadius.addEventListener('change', function (event) {
-    return params.pointRadius = parseInt(event.target.value, 10);
-  });
+  }); // TODO: reimplement when we know about ovals in Sketch 52
+  // dom.points.addEventListener('change', event => {
+  //   const val = event.target.checked;
+  //   params.renderPoints = val;
+  //   val ?
+  //     dom.pointRadiusContainer.classList.add(SHAPE_PARAM_ACTIVE) :
+  //     dom.pointRadiusContainer.classList.remove(SHAPE_PARAM_ACTIVE);
+  // });
+  // dom.pointRadius.addEventListener('change', event => params.pointRadius = parseInt(event.target.value, 10));
+
   dom.lines.addEventListener('change', function (event) {
     var val = event.target.checked;
     params.renderLines = val;

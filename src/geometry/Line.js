@@ -5,7 +5,7 @@ function createLine(p1, p2, thickness, name) {
   path.moveToPoint(NSMakePoint(p1.getX(), p1.getY()));
   path.lineToPoint(NSMakePoint(p2.getX(), p2.getY()));
 
-  const shape = MSShapeGroup.shapeWithBezierPath(MSPath.pathWithBezierPath(path));
+  const shape = MSShapeGroup.layerWithPath(MSPath.pathWithBezierPath(path));
   const border = shape.style().addStylePartOfType(1);
   border.color = MSColor.colorWithRGBADictionary(colorManager.getRandomColor());
   border.thickness = thickness;
