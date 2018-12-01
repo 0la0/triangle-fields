@@ -1,6 +1,7 @@
 {
-  "compatibleVersion": 3,
+  "compatibleVersion": "52.0",
   "bundleVersion": 1,
+  "version": "2.0.1",
   "icon": "icon.png",
   "description": "Generate Delaunay triangle tessellation inside a shape.",
   "commands": [
@@ -16,7 +17,6 @@
       "triangle-fields-identifier"
     ]
   },
-  "version": "1.0.1",
   "name": "triangle-field",
   "identifier": "triangle-field",
   "disableCocoaScriptPreprocessor": true,
