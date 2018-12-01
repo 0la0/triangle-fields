@@ -1,6 +1,8 @@
 {
   "compatibleVersion": 3,
   "bundleVersion": 1,
+  "version": "2.0.1",
+  "compatibleVersion": "52.0",
   "icon": "icon.png",
   "description": "Generate Delaunay triangle tessellation inside a shape.",
   "commands": [
